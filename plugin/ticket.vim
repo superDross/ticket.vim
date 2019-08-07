@@ -48,7 +48,7 @@ function! OpenNoteFile()
 endfunction
 
 
-command! Ticket :call CreateTicketSession()
+command! SaveTicket :call CreateTicketSession()
 command! OpenTicket :call OpenTicketSession()
-command! Note :call CreateNoteFile()
+command! SaveNote :call CreateNoteFile()
 command! OpenNote :call OpenNoteFile()

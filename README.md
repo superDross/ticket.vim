@@ -4,9 +4,13 @@ Create vim session for a specific dev ticket.
 
 ## Usage
 
-To create a ticket session `:Ticket`. To open it `:OpenTicket`.
+To create a ticket session `:SaveTicket`.
 
-To save ticket notes `:Note`. To open it `:OpenNote`.
+To open it `:OpenTicket`.
+
+To save ticket notes `:SaveNote`.
+
+To open it `:OpenNote`.
 
 ## Caveats
 
