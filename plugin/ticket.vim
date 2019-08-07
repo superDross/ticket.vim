@@ -3,8 +3,17 @@
 " Version:     0.1
 
 
+function! GetRepoName()
+  return system('basename -s .git `git config --get remote.origin.url`')
+endfunction
+
+
 function! GetBranchName()
-  return system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | sed "s/case-//" | tr -d "\n"')
+  let branchname = system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | sed "s/case-//" | tr -d "\n"')
+  if stridx(branchname, 'fatal') ==# 0
+    throw branchname
+  endif
+  return branchname
 endfunction
 
 
