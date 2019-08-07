@@ -4,12 +4,17 @@
 
 
 function! GetRepoName()
-  return system('basename -s .git `git config --get remote.origin.url`')
+  let reponame = system('basename -s .git `git config --get remote.origin.url`')
+  if stridx(reponame, 'fatal') ==# 0
+    throw reponame
+  endif
+  return reponame
 endfunction
 
 
 function! GetBranchName()
   let branchname = system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | sed "s/case-//" | tr -d "\n"')
+  " if fatal in branchname
   if stridx(branchname, 'fatal') ==# 0
     throw branchname
   endif
