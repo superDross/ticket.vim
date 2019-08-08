@@ -3,7 +3,7 @@
 " Version:     0.1
 
 
-function! CheckGit()
+function! CheckIfGitRepo()
   let msg = system('git log')
   try
     if stridx(msg, 'fatal') ==# 0
@@ -25,47 +25,47 @@ function! GetBranchName()
 endfunction
 
 
-function! GetTicketDir()
-  let sessionpath = '~/.tickets/' . GetRepoName()
-  call system('mkdir -p ' . sessionpath)
+function! GetStorageDir()
+  let dirpath = '~/.tickets/' . GetRepoName()
+  call system('mkdir -p ' . dirpath)
   execute 'redraw!'
-  return sessionpath
+  return dirpath
 endfunction
 
 
-function! GetFilePath(suffix)
-  call CheckGit()
-  let sessionname = GetBranchName()
-  let sessionpath = GetTicketDir()
-  return sessionpath . '/' . sessionname . a:suffix
+function! GetFilePath(extension)
+  call CheckIfGitRepo()
+  let branchname = GetBranchName()
+  let dirpath = GetStorageDir()
+  return dirpath . '/' . branchname . a:extension
 endfunction
 
 
-function! CreateTicketSession()
+function! CreateSession()
   let sessionfile = GetFilePath('.vim')
   execute 'mksession! ' . sessionfile
 endfunction
 
 
-function! OpenTicketSession()
+function! OpenSession()
   let sessionfile = GetFilePath('.vim')
   execute 'source ' . sessionfile
 endfunction
 
 
-function! CreateNoteFile()
+function! CreateNote()
   let mdfile = GetFilePath('.md')
   execute 'w ' . mdfile
 endfunction
 
 
-function! OpenNoteFile()
+function! OpenNote()
   let mdfile = GetFilePath('.md')
   execute 'e ' . mdfile
 endfunction
 
 
-command! SaveTicket :call CreateTicketSession()
-command! OpenTicket :call OpenTicketSession()
-command! SaveNote :call CreateNoteFile()
-command! OpenNote :call OpenNoteFile()
+command! SaveSession :call CreateSession()
+command! OpenSession :call OpenSession()
+command! SaveNote :call CreateNote()
+command! OpenNote :call OpenNote()
