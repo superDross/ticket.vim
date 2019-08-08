@@ -27,7 +27,7 @@ endfunction
 
 function! GetTicketDir()
   let sessionpath = '~/.tickets/' . GetRepoName()
-  execute 'silent !mkdir -p ' . sessionpath
+  call system('mkdir -p ' . sessionpath)
   execute 'redraw!'
   return sessionpath
 endfunction
