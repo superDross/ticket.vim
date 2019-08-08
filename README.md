@@ -1,16 +1,16 @@
 # ticket.vim
 
-Create vim session for a specific dev ticket.
+Creates and manges branch specific session files.
 
 ## Usage
 
-To create a ticket session `:SaveTicket`.
+To create a branch session `:SaveTicket`
 
-To open it `:OpenTicket`.
+To open it `:OpenTicket`
 
-To save ticket notes `:SaveNote`.
+To save branch notes `:SaveNote`
 
-To open it `:OpenNote`.
+To open it `:OpenNote`
 
 ## Caveats
 
@@ -18,7 +18,11 @@ The organisation and storage of the session files is reliant upon the assumption
 
 ### Example
 
-Say you are currently in branch `feature/case-34200` in the `NewProject` repo and subsequently execute `:Ticket` within vim. The session file will be stored and retrieved from `~/.tickets/NewProject/case-34200.vim`. To open this specific session with `:OpenTicket`, you must be in branch `feature/case-34200`.
+Say you are currently in branch `feature/case-34200` in the `NewProject` repo and subsequently execute `:Ticket` within vim.
+
+The session file will be stored within `~/.tickets/NewProject/case-34200.vim`.
+
+To open this specific session with `:OpenTicket`, you must be in branch `feature/case-34200`.
 
 ## Installation
 
