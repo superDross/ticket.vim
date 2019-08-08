@@ -15,19 +15,18 @@ function! CheckGit()
 endfunction
 
 
-" NOTE: would be nice to add the repo name with the case name
 function! GetRepoName()
-  return system('basename -s .git `git config --get remote.origin.url`')
+  return system('basename -s .git `git config --get remote.origin.url` | tr -d "\n"')
 endfunction
 
 
 function! GetBranchName()
-  return system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | sed "s/case-//" | tr -d "\n"')
+  return system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"')
 endfunction
 
 
-function! GetTicketDir(caseid)
-  let sessionpath = '~/.tickets/' . a:caseid
+function! GetTicketDir()
+  let sessionpath = '~/.tickets/' . GetRepoName()
   execute 'silent !mkdir -p ' . sessionpath
   execute 'redraw!'
   return sessionpath
@@ -36,9 +35,9 @@ endfunction
 
 function! GetFilePath(suffix)
   call CheckGit()
-  let caseid = GetBranchName()
-  let sessionpath = GetTicketDir(caseid)
-  return sessionpath . '/' . caseid . a:suffix
+  let sessionname = GetBranchName()
+  let sessionpath = GetTicketDir()
+  return sessionpath . '/' . sessionname . a:suffix
 endfunction
 
 
@@ -55,13 +54,13 @@ endfunction
 
 
 function! CreateNoteFile()
-  let mdfile = GetFilePath('-note.md')
+  let mdfile = GetFilePath('.md')
   execute 'w ' . mdfile
 endfunction
 
 
 function! OpenNoteFile()
-  let mdfile = GetFilePath('-note.md')
+  let mdfile = GetFilePath('.md')
   execute 'e ' . mdfile
 endfunction
 
