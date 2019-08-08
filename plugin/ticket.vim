@@ -25,10 +25,9 @@ function! GetBranchName()
 endfunction
 
 
-function! GetStorageDir()
+function! GetDirPath()
   let dirpath = '~/.tickets/' . GetRepoName()
   call system('mkdir -p ' . dirpath)
-  execute 'redraw!'
   return dirpath
 endfunction
 
@@ -36,7 +35,7 @@ endfunction
 function! GetFilePath(extension)
   call CheckIfGitRepo()
   let branchname = GetBranchName()
-  let dirpath = GetStorageDir()
+  let dirpath = GetDirPath()
   return dirpath . '/' . branchname . a:extension
 endfunction
 
