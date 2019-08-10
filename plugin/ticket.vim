@@ -3,13 +3,26 @@
 " Version:     0.1
 
 
+function! CheckFileExists(file)
+  try
+    if filereadable(expand(a:file))
+      return a:file
+    else
+      throw 'no file'
+    endif
+  catch /.*no file/
+    echoerr 'File ' . a:file . ' does not exist'
+  endtry
+endfunction
+
+
 function! CheckIfGitRepo()
   let msg = system('git log')
   try
     if stridx(msg, 'fatal') ==# 0
       throw 'git error'
     endif
-  catch /.*/
+  catch /.*git error/
     echoerr 'The current directory is not a git repository'
   endtry
 endfunction
@@ -48,6 +61,7 @@ endfunction
 
 function! OpenSession()
   let sessionfile = GetFilePath('.vim')
+  call CheckFileExists(sessionfile)
   execute 'source ' . sessionfile
 endfunction
 
@@ -60,6 +74,7 @@ endfunction
 
 function! OpenNote()
   let mdfile = GetFilePath('.md')
+  call CheckFileExists(mdfile)
   execute 'e ' . mdfile
 endfunction
 
