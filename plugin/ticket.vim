@@ -19,11 +19,15 @@ endfunction
 function! CheckIfGitRepo()
   let msg = system('git log')
   try
-    if stridx(msg, 'fatal') ==# 0
-      throw 'git error'
+    if matchstr(msg, '.*not a git repository.*') ==# msg
+      throw 'not a repo'
+    elseif matchstr(msg, '.*does not have any commits yet.*') ==# msg
+      throw 'no commits'
     endif
-  catch /.*git error/
+  catch /.*not a repo/
     echoerr 'The current directory is not a git repository'
+  catch /.*no commits/
+    echoerr 'Make an initial branch commit before saving a session'
   endtry
 endfunction
 
