@@ -83,7 +83,14 @@ function! OpenNote()
 endfunction
 
 
+function! GrepNotes(query)
+  let ticketsdir = expand('~') . '/.tickets/**/*.md'
+  execute 'vimgrep! /' . a:query . '/j ' . ticketsdir
+endfunction
+
+
 command! SaveSession :call CreateSession()
 command! OpenSession :call OpenSession()
 command! SaveNote :call CreateNote()
 command! OpenNote :call OpenNote()
+command! -nargs=1 GrepNotes :call GrepNotes(<f-args>)

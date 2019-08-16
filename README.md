@@ -12,6 +12,8 @@ To save branch notes `:SaveNote`
 
 To open it `:OpenNote`
 
+To search all notes for git `:GrepNotes git`
+
 ## Caveats
 
 The organisation and storage of the session files depends on the git branch name being unique.
