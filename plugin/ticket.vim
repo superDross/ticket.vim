@@ -33,8 +33,12 @@ endfunction
 
 
 function! GetRepoName()
-  " this errors if no remote has been added
-  return system('basename -s .git `git config --get remote.origin.url` | tr -d "\n"')
+  " returns remote name if set, otherwise top directory name is returned
+  if system('git config --get remote.origin.url') !=# ''
+    return system('basename -s .git `git config --get remote.origin.url` | tr -d "\n"')
+  else
+    return system('basename `git rev-parse --show-toplevel` | tr -d "\n"')
+  endif
 endfunction
 
 
