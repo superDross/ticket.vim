@@ -90,7 +90,7 @@ endfunction
 
 function! GrepNotes(query)
   let ticketsdir = expand('~') . '/.tickets/**/*.md'
-  execute 'vimgrep! /' . a:query . '/j ' . ticketsdir
+  execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
 endfunction
 
 
