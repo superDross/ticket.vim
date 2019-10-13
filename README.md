@@ -1,6 +1,6 @@
 # ticket.vim
 
-Creates and manges branch specific session files.
+Creates and manges git branch specific session files.
 
 ## Usage
 
@@ -14,11 +14,17 @@ To open it `:OpenNote`
 
 To search all notes for git `:GrepNotes git`
 
+To automatically open and save and session files set the following in your `.vimrc`:
+
+```vim
+let g:ticket_autosave = 1
+```
+
 ## Caveats
 
-The organisation and storage of the session files depends on the git branch name being unique.
+The organisation and storage of the session files depends upon the git branch name being unique.
 
-### Example
+## Example
 
 Say you are currently in branch `feature/case-34200` in the `NewProject` repo and subsequently execute `:SaveSession` within vim.
 

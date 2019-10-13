@@ -1,6 +1,11 @@
 " ticket.vim - Ticket
 " Author:      David Ross <https://github.com/superDross/>
-" Version:     0.1
+" Version:     0.2
+
+" turn off autosave if global variable is not set
+if exists('g:ticket_autosave') ==# 0
+  let g:ticket_autosave = 0
+endif
 
 
 function! CheckFileExists(file)
@@ -62,6 +67,13 @@ function! GetFilePath(extension)
 endfunction
 
 
+function! GetFilePathOnlyIfExists(extension)
+  let filepath = GetFilePath(a:extension)
+  call CheckFileExists(filepath)
+  return filepath
+endfunction
+
+
 function! CreateSession()
   let sessionfile = GetFilePath('.vim')
   execute 'mksession! ' . sessionfile
@@ -69,8 +81,7 @@ endfunction
 
 
 function! OpenSession()
-  let sessionfile = GetFilePath('.vim')
-  call CheckFileExists(sessionfile)
+  let sessionfile = GetFilePathOnlyIfExists('.vim')
   execute 'source ' . sessionfile
 endfunction
 
@@ -82,8 +93,7 @@ endfunction
 
 
 function! OpenNote()
-  let mdfile = GetFilePath('.md')
-  call CheckFileExists(mdfile)
+  let mdfile = GetFilePathOnlyIfExists('.md')
   execute 'e ' . mdfile
 endfunction
 
@@ -92,6 +102,40 @@ function! GrepNotes(query)
   let ticketsdir = expand('~') . '/.tickets/**/*.md'
   execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
 endfunction
+
+
+function! DetermineAutoSave()
+  " only autosave if file is in a valid git repo
+  try 
+    call CheckIfGitRepo()
+    return 1
+  catch /.*/
+    return 0
+  endtry
+endfunction
+
+
+function! DetermineAutoOpen()
+  " only auto open if the session file exists
+  try
+    call GetFilePathOnlyIfExists('.vim')
+    return 1
+  catch /.*/
+    return 0
+  endtry
+endfunction
+
+
+augroup ticket
+  if g:ticket_autosave
+    if DetermineAutoSave()
+      if DetermineAutoOpen()
+        autocmd VimEnter * :if argc() ==# 0 | call OpenSession() | endif
+      endif
+      autocmd VimLeavePre,BufWritePost * :call CreateSession()
+    endif
+  endif
+augroup END
 
 
 command! SaveSession :call CreateSession()
