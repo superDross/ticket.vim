@@ -1,0 +1,112 @@
+Before:
+  call system('touch ~/test.file')
+  let repodir = getcwd()
+
+After:
+  call system('rm ~/test.file')
+
+Execute(expect GetBranchName pass):
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+  AssertEqual
+    \ GetBranchName(),
+    \ branchname
+
+Execute(expect g:ticket_autosave to autoset to zero):
+  AssertEqual
+    \ g:ticket_autosave,
+    \ 0
+
+Execute(expect CheckFileExists fail):
+  AssertThrows
+    \ CheckFileExists('/home/nonfile')
+
+Execute(expect CheckFileExists pass):
+  AssertEqual
+    \ CheckFileExists(expand('~') . '/test.file'),
+    \ expand('~') . '/test.file'
+
+Execute(expect CheckIfGitRepo fail):
+  :cd /
+  AssertThrows
+    \ CheckIfGitRepo()
+  :cd -
+
+Execute(expect CheckIfGitRepo pass):
+  AssertEqual
+    \ CheckIfGitRepo(),
+    \ 0
+
+Execute(expect GetRepoName fail):
+  :cd /
+  AssertThrows
+    \ GetRepoName()
+  :cd -
+
+Execute(expect GetRepoName pass):
+  AssertEqual
+    \ GetRepoName(),
+    \ 'ticket.vim'
+
+Execute(expect GitDirPath pass):
+  AssertEqual
+    \ GetDirPath(),
+    \ '~/.tickets/ticket.vim'
+
+Execute(expect GitDirPath fail):
+  :cd /
+  AssertThrows
+    \ GetDirPath()
+  :cd -
+
+Execute(expect GetFilePath session pass):
+  AssertEqual
+    \ GetFilePath('.vim'),
+    \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
+
+Execute(expect GetFilePath markdown pass):
+  AssertEqual
+    \ GetFilePath('.md'),
+    \ '~/.tickets/ticket.vim/' . GetBranchName() . '.md'
+
+Execute(expect GetFilePathOnlyIfExists fail):
+  AssertThrows
+    \ GetFilePathOnlyIfExists('.py')
+
+Execute(expect CreateSession pass):
+  call CreateSession()
+  Assert
+    \ filereadable(
+    \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.vim')
+    \ )
+
+Execute(expect CreateNote pass):
+  call CreateNote()
+  Assert
+    \ filereadable(
+    \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.md')
+    \ )
+
+Execute(expect DetermineAutosave pass):
+  AssertEqual
+    \ DetermineAutoSave(),
+    \ 1
+
+Execute(expect DetermineAutosave fail):
+  :cd /
+  AssertEqual
+    \ DetermineAutoSave(),
+    \ 0
+  :cd -
+
+Execute(expect DetermineAutoOpen pass):
+  AssertEqual
+    \ DetermineAutoOpen(),
+    \ 1
+
+Execute(expect DetermineAutoOpen fail):
+  call system('rm ~/.tickets/ticket.vim/' . GetBranchName() . '.vim')
+  AssertEqual
+    \ DetermineAutoOpen(),
+    \ 0
