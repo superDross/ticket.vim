@@ -1,9 +1,11 @@
 Before:
   call system('touch ~/test.file')
-  let repodir = getcwd()
 
 After:
+  let g:ticket_auto_save = 0
+  let g:ticket_auto_open = 0
   call system('rm ~/test.file')
+
 
 Execute(expect GetBranchName pass):
   let branchname = system(
@@ -15,7 +17,12 @@ Execute(expect GetBranchName pass):
 
 Execute(expect g:ticket_autosave to autoset to zero):
   AssertEqual
-    \ g:ticket_autosave,
+    \ g:ticket_auto_save,
+    \ 0
+
+Execute(expect g:ticket_autoopen to autoset to zero):
+  AssertEqual
+    \ g:ticket_auto_open,
     \ 0
 
 Execute(expect CheckFileExists fail):
@@ -70,6 +77,12 @@ Execute(expect GetFilePath markdown pass):
     \ GetFilePath('.md'),
     \ '~/.tickets/ticket.vim/' . GetBranchName() . '.md'
 
+Execute(expect GetFilePathOnlyIfExists pass):
+  call CreateSession()
+  AssertEqual
+    \ GetFilePathOnlyIfExists('.vim'),
+    \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
+
 Execute(expect GetFilePathOnlyIfExists fail):
   AssertThrows
     \ GetFilePathOnlyIfExists('.py')
@@ -88,25 +101,45 @@ Execute(expect CreateNote pass):
     \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.md')
     \ )
 
-Execute(expect DetermineAutosave pass):
-  AssertEqual
-    \ DetermineAutoSave(),
-    \ 1
-
-Execute(expect DetermineAutosave fail):
-  :cd /
-  AssertEqual
-    \ DetermineAutoSave(),
-    \ 0
-  :cd -
-
 Execute(expect DetermineAutoOpen pass):
+  let g:ticket_auto_open = 1
+  call CreateSession()
   AssertEqual
     \ DetermineAutoOpen(),
     \ 1
 
 Execute(expect DetermineAutoOpen fail):
+  call CreateSession()
+  AssertEqual
+    \ DetermineAutoOpen(),
+    \ 0
+
+Execute(expect DetermineAutoOpen fail due to no session file):
+  let g:ticket_auto_open = 1
   call system('rm ~/.tickets/ticket.vim/' . GetBranchName() . '.vim')
   AssertEqual
     \ DetermineAutoOpen(),
     \ 0
+
+Execute(expect DetermineAutoSave pass):
+  let g:ticket_auto_save = 1
+  AssertEqual
+    \ DetermineAutoSave(),
+    \ 1
+
+Execute(expect DetermineAutoSave fail):
+  AssertEqual
+    \ DetermineAutoSave(),
+    \ 0
+
+" TODO: does not work during travis ci but does locally
+" I suspect it has something to do with the changing dirs, perhaps
+" `cd -` is not being executed
+
+" Execute(expect DetermineAutoSave fail because not in git repo):
+"   :cd /
+"   let g:ticket_auto_save = 1
+"   AssertEqual
+"     \ DetermineAutoSave(),
+"     \ 0
+"   :cd - 
