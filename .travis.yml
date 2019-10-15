@@ -8,7 +8,7 @@ language: vim
 
 before_script: |
   git clone https://github.com/junegunn/vader.vim.git
-  git checkout -b master
+  git checkout -b testing_branch
 
 script: |
   vim -Nu <(cat << VIMRC
