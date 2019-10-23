@@ -17,7 +17,8 @@ To search all notes for git `:GrepNotes git`
 To automatically open and save and session files set the following in your `.vimrc`:
 
 ```vim
-let g:ticket_autosave = 1
+let g:ticket_auto_open = 1
+let g:ticket_auto_save = 1
 ```
 
 ## Caveats
