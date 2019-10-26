@@ -65,3 +65,4 @@ Only works in UNIX based systems, this plugin has only been tested in Ubuntu.
 
 - Create a blacklist for auto open/save settings e.g. disallow auto session open/saving of the `master` branch.
 - Increase testing coverage.
+- Allow user to override command names.
