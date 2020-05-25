@@ -16,17 +16,28 @@ One can also have these session files automatically open and save.
 
 Branch specific note files can be created & managed using `:OpenNote` & `:SaveNote`. This is useful when fixing a bug in a certain branch and you wish to document your findings while troubleshooting.
 
-## Usage
+## Key Bindings
 
-To create a branch session `:SaveSession`
+Commands:
 
-To open it `:OpenSession`
+- `:SaveSession` -- To create a branch session 
 
-To save branch notes `:SaveNote`
+- `:OpenSession` -- Open the session
 
-To open it `:OpenNote`
+- `:SaveNote` -- Save notes about the branch
 
-To search all notes for git `:GrepNotes git`
+- `:OpenNote` -- Open branch note
+
+- `:GrepNotes *` -- Search all notes for given arg
+
+
+Normal Mode:
+
+- `<Leader>ng` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim)
+- `<Leader>ns` -- Save notes about branch
+- `<Leader>no` -- Open branch note
+
+## Settings
 
 To automatically open and save and session files set the following in your `.vimrc`:
 
