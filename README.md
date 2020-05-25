@@ -30,6 +30,7 @@ Commands:
 
 - `:GrepNotes *` -- Search all notes for given arg
 
+- `:GrepTicketNotesFzf` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim)
 
 Normal Mode:
 
