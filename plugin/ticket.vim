@@ -98,7 +98,7 @@ endfunction
 
 
 function! OpenNote()
-  let mdfile = GetFilePathOnlyIfExists('.md')
+  let mdfile = GetFilePath('.md')
   execute 'e ' . mdfile
 endfunction
 
