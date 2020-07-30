@@ -2,11 +2,13 @@
 
 Creates and manges git branch specific session files.
 
+![](docs/auto-demo.gif)
+
 ## Function
 
 This allows one to open and save session files associated with specific git branches easily. This is particularly useful if you need to switch branch, but want to preserve your vim state in the branch you are currently within.
 
-When in the `branch1` you can execute `:SaveSession`, switch to `branch2` do what you need to do here then switch back to `branch1` and execute `OpenSession`. Your vim instance will look exactly the same as it was prior to switching to `branch2`.
+When in the `branch1` you can execute `:SaveSession`, switch to `branch2` do what you need to do here then switch back to `branch1` and execute `:OpenSession`. Your vim instance will look exactly the same as it was prior to switching to `branch2`.
 
 In this way, each branch can have its very own session that can be easily opened (`:OpenSession`) and saved/overwritten (`:SaveSession`).
 
