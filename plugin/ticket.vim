@@ -1,15 +1,10 @@
 " ticket.vim - Ticket
 " Author:      David Ross <https://github.com/superDross/>
-" Version:     0.2
+" Version:     0.21
 
 
-if exists('g:ticket_auto_save') ==# 0
-  let g:ticket_auto_save = 0
-endif
-
-
-if exists('g:ticket_auto_open') ==# 0
-  let g:ticket_auto_open = 0
+if exists('g:auto_ticket') ==# 0
+  let g:auto_ticket = 0
 endif
 
 
@@ -109,9 +104,9 @@ function! GrepNotes(query)
 endfunction
 
 
-function! DetermineAutoSave()
+function! DetermineAuto()
   " only autosave if file is in a valid git repo
-  if g:ticket_auto_save
+  if g:auto_ticket
     try 
       call CheckIfGitRepo()
       return 1
@@ -122,23 +117,14 @@ function! DetermineAutoSave()
 endfunction
 
 
-function! DetermineAutoOpen()
-  " only auto open if the session file exists
-  if g:ticket_auto_open
-    try
-      call GetFilePathOnlyIfExists('.vim')
-      return 1
-    catch /.*/
-      return 0
-    endtry
-  endif
-endfunction
-
-
 augroup ticket
-  if DetermineAutoSave()
-    if DetermineAutoOpen()
+  " automatically open and save sessions
+  if DetermineAuto()
+    let session_file_path = GetFilePath('.vim')
+    if filereadable(expand(session_file_path))
       autocmd VimEnter * :if argc() ==# 0 | call OpenSession() | endif
+    else
+      call CreateSession()
     endif
     autocmd VimLeavePre,BufWritePost * :call CreateSession()
   endif

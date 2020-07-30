@@ -2,8 +2,7 @@ Before:
   call system('touch ~/test.file')
 
 After:
-  let g:ticket_auto_save = 0
-  let g:ticket_auto_open = 0
+  let g:auto_ticket = 0
   call system('rm ~/test.file')
 
 
@@ -15,14 +14,9 @@ Execute(expect GetBranchName pass):
     \ GetBranchName(),
     \ branchname
 
-Execute(expect g:ticket_autosave to autoset to zero):
+Execute(expect g:auto_ticket to autoset to zero):
   AssertEqual
-    \ g:ticket_auto_save,
-    \ 0
-
-Execute(expect g:ticket_autoopen to autoset to zero):
-  AssertEqual
-    \ g:ticket_auto_open,
+    \ g:auto_ticket,
     \ 0
 
 Execute(expect CheckFileExists fail):
@@ -101,45 +95,34 @@ Execute(expect CreateNote pass):
     \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.md')
     \ )
 
-Execute(expect DetermineAutoOpen pass):
-  let g:ticket_auto_open = 1
+Execute(expect DetermineAuto pass):
+  let g:auto_ticket = 1
   call CreateSession()
   AssertEqual
-    \ DetermineAutoOpen(),
+    \ DetermineAuto(),
     \ 1
 
-Execute(expect DetermineAutoOpen fail):
+Execute(expect DetermineAuto fail):
   call CreateSession()
   AssertEqual
-    \ DetermineAutoOpen(),
+    \ DetermineAuto(),
     \ 0
 
-Execute(expect DetermineAutoOpen fail due to no session file):
-  let g:ticket_auto_open = 1
+Execute(expect DetermineAuto to pass when session file does not exist):
+  let g:auto_ticket = 1
   call system('rm ~/.tickets/ticket.vim/' . GetBranchName() . '.vim')
   AssertEqual
-    \ DetermineAutoOpen(),
-    \ 0
-
-Execute(expect DetermineAutoSave pass):
-  let g:ticket_auto_save = 1
-  AssertEqual
-    \ DetermineAutoSave(),
+    \ DetermineAuto(),
     \ 1
-
-Execute(expect DetermineAutoSave fail):
-  AssertEqual
-    \ DetermineAutoSave(),
-    \ 0
 
 " TODO: does not work during travis ci but does locally
 " I suspect it has something to do with the changing dirs, perhaps
 " `cd -` is not being executed
 
-" Execute(expect DetermineAutoSave fail because not in git repo):
+" Execute(expect DetermineAuto fail because not in git repo):
 "   :cd /
 "   let g:ticket_auto_save = 1
 "   AssertEqual
-"     \ DetermineAutoSave(),
+"     \ DetermineAuto(),
 "     \ 0
 "   :cd - 
