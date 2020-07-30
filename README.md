@@ -43,8 +43,7 @@ Normal Mode:
 To automatically open and save and session files set the following in your `.vimrc`:
 
 ```vim
-let g:ticket_auto_open = 1
-let g:ticket_auto_save = 1
+let g:auto_ticket = 1
 ```
 
 ## Installation
