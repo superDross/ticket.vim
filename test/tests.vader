@@ -3,6 +3,7 @@ Before:
 
 After:
   let g:auto_ticket = 0
+  let g:ticket_black_list = []
   call system('rm ~/test.file')
 
 
@@ -18,6 +19,11 @@ Execute(expect g:auto_ticket to autoset to zero):
   AssertEqual
     \ g:auto_ticket,
     \ 0
+
+Execute(expect g:ticket_black_list to autoset to empty list):
+  AssertEqual
+    \ g:ticket_black_list,
+    \ []
 
 Execute(expect CheckFileExists fail):
   AssertThrows
@@ -95,6 +101,20 @@ Execute(expect CreateNote pass):
     \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.md')
     \ )
 
+Execute(expect BranchInBlackList pass):
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+  let g:ticket_black_list = [branchname, 'other-branch']
+  AssertEqual
+    \ BranchInBlackList(),
+    \ 1
+
+Execute(expect BranchInBlackList fail):
+  AssertEqual
+    \ BranchInBlackList(),
+    \ 0
+
 Execute(expect DetermineAuto pass):
   let g:auto_ticket = 1
   call CreateSession()
@@ -103,6 +123,17 @@ Execute(expect DetermineAuto pass):
     \ 1
 
 Execute(expect DetermineAuto fail):
+  call CreateSession()
+  AssertEqual
+    \ DetermineAuto(),
+    \ 0
+
+Execute(expect DetermineAuto fail due to black listed branch):
+  let g:auto_ticket = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+  let g:ticket_black_list = [branchname, 'other-branch']
   call CreateSession()
   AssertEqual
     \ DetermineAuto(),

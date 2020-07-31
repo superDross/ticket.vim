@@ -48,6 +48,13 @@ To automatically open and save session files when opening/closing vim set the fo
 let g:auto_ticket = 1
 ```
 
+Black list some branches from being used with the auto feature:
+
+```vim
+let g:auto_ticket = 1
+let g:ticket_black_list = ['master', 'other-branch']
+```
+
 ## Installation
 
 For vim-plug
@@ -72,7 +79,7 @@ The session files are stored as below; git repository directory name with all br
 
 The organisation and storage of the session files depends upon the repo & git branch pairing name being unique.
 
-Only works in UNIX based systems, this plugin has only been tested in Ubuntu.
+Only works within \*NIX based systems.
 
 ## TODO
 
