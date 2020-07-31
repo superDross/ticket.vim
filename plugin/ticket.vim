@@ -8,6 +8,11 @@ if exists('g:auto_ticket') ==# 0
 endif
 
 
+if exists('g:ticket_black_list') ==# 0
+  let g:ticket_black_list = []
+endif
+
+
 function! CheckFileExists(file)
   try
     if filereadable(expand(a:file))
@@ -59,6 +64,15 @@ function! GetDirPath()
 endfunction
 
 
+function! BranchInBlackList()
+  let branchname = GetBranchName()
+  if (index(g:ticket_black_list, branchname) >= 0)
+    return 1
+  endif
+  return 0
+endfunction
+
+
 function! GetFilePath(extension)
   call CheckIfGitRepo()
   let branchname = GetBranchName()
@@ -105,14 +119,19 @@ endfunction
 
 
 function! DetermineAuto()
-  " only autosave if file is in a valid git repo
   if g:auto_ticket
-    try 
+    " only autosave if file is in a valid git repo
+    try
       call CheckIfGitRepo()
-      return 1
     catch /.*/
       return 0
     endtry
+    " only autosave if the current branch is not black listed
+    if BranchInBlackList() ==# 1
+      return 0
+    endif
+
+    return 1
   endif
 endfunction
 
