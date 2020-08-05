@@ -82,7 +82,5 @@ The organisation and storage of the session files depends upon the repo & git br
 Only works within \*NIX based systems.
 
 ## TODO
-
-- Create a blacklist for auto open/save settings e.g. disallow auto session open/saving of the `master` branch.
 - Increase testing coverage.
 - Allow user to override command names.
