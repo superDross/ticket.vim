@@ -57,7 +57,7 @@ function! GetBranchName()
 endfunction
 
 
-function! GetDirPath()
+function! GetTicketDirPath()
   let dirpath = '~/.tickets/' . GetRepoName()
   call system('mkdir -p ' . dirpath)
   return dirpath
@@ -73,41 +73,41 @@ function! BranchInBlackList()
 endfunction
 
 
-function! GetFilePath(extension)
+function! GetTicketFilePath(extension)
   call CheckIfGitRepo()
   let branchname = GetBranchName()
-  let dirpath = GetDirPath()
+  let dirpath = GetTicketDirPath()
   return dirpath . '/' . branchname . a:extension
 endfunction
 
 
-function! GetFilePathOnlyIfExists(extension)
-  let filepath = GetFilePath(a:extension)
+function! GetTicketFilePathOnlyIfExists(extension)
+  let filepath = GetTicketFilePath(a:extension)
   call CheckFileExists(filepath)
   return filepath
 endfunction
 
 
 function! CreateSession()
-  let sessionfile = GetFilePath('.vim')
+  let sessionfile = GetTicketFilePath('.vim')
   execute 'mksession! ' . sessionfile
 endfunction
 
 
 function! OpenSession()
-  let sessionfile = GetFilePathOnlyIfExists('.vim')
+  let sessionfile = GetTicketFilePathOnlyIfExists('.vim')
   execute 'source ' . sessionfile
 endfunction
 
 
 function! CreateNote()
-  let mdfile = GetFilePath('.md')
+  let mdfile = GetTicketFilePath('.md')
   execute 'w ' . mdfile
 endfunction
 
 
 function! OpenNote()
-  let mdfile = GetFilePath('.md')
+  let mdfile = GetTicketFilePath('.md')
   execute 'e ' . mdfile
 endfunction
 
@@ -139,7 +139,7 @@ endfunction
 augroup ticket
   " automatically open and save sessions
   if DetermineAuto()
-    let session_file_path = GetFilePath('.vim')
+    let session_file_path = GetTicketFilePath('.vim')
     if filereadable(expand(session_file_path))
       autocmd VimEnter * :if argc() ==# 0 | call OpenSession() | endif
     else

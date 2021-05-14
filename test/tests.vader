@@ -58,34 +58,34 @@ Execute(expect GetRepoName pass):
 
 Execute(expect GitDirPath pass):
   AssertEqual
-    \ GetDirPath(),
+    \ GetTicketDirPath(),
     \ '~/.tickets/ticket.vim'
 
 Execute(expect GitDirPath fail):
   :cd /
   AssertThrows
-    \ GetDirPath()
+    \ GetTicketDirPath()
   :cd -
 
-Execute(expect GetFilePath session pass):
+Execute(expect GetTicketFilePath session pass):
   AssertEqual
-    \ GetFilePath('.vim'),
+    \ GetTicketFilePath('.vim'),
     \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
 
-Execute(expect GetFilePath markdown pass):
+Execute(expect GetTicketFilePath markdown pass):
   AssertEqual
-    \ GetFilePath('.md'),
+    \ GetTicketFilePath('.md'),
     \ '~/.tickets/ticket.vim/' . GetBranchName() . '.md'
 
-Execute(expect GetFilePathOnlyIfExists pass):
+Execute(expect GetTicketFilePathOnlyIfExists pass):
   call CreateSession()
   AssertEqual
-    \ GetFilePathOnlyIfExists('.vim'),
+    \ GetTicketFilePathOnlyIfExists('.vim'),
     \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
 
-Execute(expect GetFilePathOnlyIfExists fail):
+Execute(expect GetTicketFilePathOnlyIfExists fail):
   AssertThrows
-    \ GetFilePathOnlyIfExists('.py')
+    \ GetTicketFilePathOnlyIfExists('.py')
 
 Execute(expect CreateSession pass):
   call CreateSession()
