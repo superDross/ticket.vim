@@ -159,7 +159,3 @@ command! -bang -nargs=* GrepTicketNotesFzf
   \ call fzf#vim#grep(
   \   'rg --type md --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview({'dir': '~/.tickets/'}), <bang>0)
-
-nnoremap <Leader>ng :GrepTicketNotesFzf<CR>
-nnoremap <Leader>ns :SaveNote<CR>
-nnoremap <Leader>no :OpenNote<CR>
