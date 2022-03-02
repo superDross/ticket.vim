@@ -18,9 +18,7 @@ One can also have these session files automatically open and save.
 
 Branch specific note files can be created & managed using `:OpenNote` & `:SaveNote`. This is useful when fixing a bug in a certain branch and you wish to document your findings while troubleshooting.
 
-## Key Bindings
-
-Commands:
+## Commands
 
 - `:SaveSession` -- To create a branch session 
 
@@ -34,11 +32,6 @@ Commands:
 
 - `:GrepTicketNotesFzf` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim)
 
-Normal Mode:
-
-- `<Leader>ng` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim)
-- `<Leader>ns` -- Save notes about branch
-- `<Leader>no` -- Open branch note
 
 ## Settings
 
@@ -75,12 +68,8 @@ The session files are stored as below; git repository directory name with all br
    └── <branch-name>.vim
 ```
 
-## Caveats
+## Limitations
 
-The organisation and storage of the session files depends upon the repo & git branch pairing name being unique.
+- The organisation and storage of the session files depends upon the repo & git branch pairing name being unique.
 
-Only works within \*NIX based systems.
-
-## TODO
-- Increase testing coverage.
-- Allow user to override command names.
+- Only works within \*NIX based systems.
