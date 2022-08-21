@@ -1,6 +1,8 @@
 " ticket.vim - Ticket
 " Author:      David Ross <https://github.com/superDross/>
-" Version:     0.21
+" Version:     0.3.0
+" TODO:
+"   - place functions into different modules
 
 
 if exists('g:auto_ticket') ==# 0
@@ -118,6 +120,56 @@ function! GrepNotes(query)
 endfunction
 
 
+function! GetAllBranchNames()
+  " returns a list of all branch names (stripped of feature/bugfix prefix)
+  " associated within the current repo
+  return split(
+  \ system(
+  \    "git for-each-ref --format='%(refname:short)' refs/heads | sed 's@.*/@@'"
+  \ )
+  \)
+endfunction
+
+
+function! GetAllSessionNames(repo)
+  " returns all session names stripped of feature/bugfix prefix & extension
+  " for a given repo
+  return split(system(
+  \  'find ~/.tickets/' . a:repo . ' -name "*.vim" |
+  \   xargs -I {} basename {} |
+  \   sed "s/.\{4\}$//"'
+  \))
+endfunction
+
+
+function DeleteOldSessions()
+  " removes sessions files that no longer have local branches
+  let branches = GetAllBranchNames()
+  let repo = GetRepoName()
+
+  let deletelist = []
+  for session in GetAllSessionNames(repo)
+    if index(branches, session) == -1  " if session not in branches
+      let sessionpath = system(
+      \  'find ~/.tickets/' . repo . ' -name ' . '*' . session . '.vim'
+      \)
+      call add(deletelist, sessionpath)
+    endif
+  endfor
+
+  echo join(deletelist, "\r")
+  let answer = input('Are you sure you want to delete the above session files? (y/n): ')
+
+  if answer ==# 'y'
+    for file in deletelist
+      " TODO: find out why delete() does not work here
+      call system('rm ' . file)
+    endfor
+  endif
+
+endfunction
+
+
 function! DetermineAuto()
   if g:auto_ticket
     " only autosave if file is in a valid git repo
@@ -152,6 +204,7 @@ augroup END
 
 command! SaveSession :call CreateSession()
 command! OpenSession :call OpenSession()
+command! CleanupSessions :call DeleteOldSessions()
 command! SaveNote :call CreateNote()
 command! OpenNote :call OpenNote()
 command! -nargs=1 GrepNotes :call GrepNotes(<f-args>)

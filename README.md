@@ -24,6 +24,8 @@ Branch specific note files can be created & managed using `:OpenNote` & `:SaveNo
 
 - `:OpenSession` -- Open the session
 
+- `:CleanupSessions` -- Remove sessions that do not have a local branch
+
 - `:SaveNote` -- Save notes about the branch
 
 - `:OpenNote` -- Open branch note
