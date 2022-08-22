@@ -135,14 +135,14 @@ function! GetAllSessionNames(repo)
   " returns all session names stripped of feature/bugfix prefix & extension
   " for a given repo
   return split(system(
-  \  'find ~/.tickets/' . a:repo . ' -name "*.vim" |
+  \  'find ~/.tickets/' . a:repo . ' -type f -name "*.vim" |
   \   xargs -I {} basename {} |
   \   sed "s/.\{4\}$//"'
   \))
 endfunction
 
 
-function DeleteOldSessions()
+function DeleteOldSessions(force_input)
   " removes sessions files that no longer have local branches
   let branches = GetAllBranchNames()
   let repo = GetRepoName()
@@ -151,14 +151,18 @@ function DeleteOldSessions()
   for session in GetAllSessionNames(repo)
     if index(branches, session) == -1  " if session not in branches
       let sessionpath = system(
-      \  'find ~/.tickets/' . repo . ' -name ' . '*' . session . '.vim'
+      \  'find ~/.tickets/' . repo . ' -type f -name ' . '*' . session . '.vim'
       \)
       call add(deletelist, sessionpath)
     endif
   endfor
 
   echo join(deletelist, "\r")
-  let answer = input('Are you sure you want to delete the above session files? (y/n): ')
+  if a:force_input == 1
+    let answer = 'y'
+  else
+    let answer = input('Are you sure you want to delete the above session files? (y/n): ')
+  endif
 
   if answer ==# 'y'
     for file in deletelist
@@ -204,7 +208,7 @@ augroup END
 
 command! SaveSession :call CreateSession()
 command! OpenSession :call OpenSession()
-command! CleanupSessions :call DeleteOldSessions()
+command! CleanupSessions :call DeleteOldSessions(0)
 command! SaveNote :call CreateNote()
 command! OpenNote :call OpenNote()
 command! -nargs=1 GrepNotes :call GrepNotes(<f-args>)

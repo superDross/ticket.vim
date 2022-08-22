@@ -1,5 +1,6 @@
 Before:
   call system('touch ~/test.file')
+  call system('touch ~/.tickets/ticket.vim/old-session.vim')
 
 After:
   let g:auto_ticket = 0
@@ -145,6 +146,17 @@ Execute(expect DetermineAuto to pass when session file does not exist):
   AssertEqual
     \ DetermineAuto(),
     \ 1
+
+Execute(expect GetAllSessionNames to show all sessions):
+  AssertEqual
+    \ GetAllSessionNames('ticket.vim'),
+    \ ['old-session']
+
+Execute(expect DeleteOldSessions remove old-session.vim):
+  call DeleteOldSessions(1)
+  AssertEqual
+    \ GetAllSessionNames('ticket.vim'),
+    \ []
 
 " TODO: does not work during travis ci but does locally
 " I suspect it has something to do with the changing dirs, perhaps
