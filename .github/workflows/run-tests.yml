@@ -1,0 +1,25 @@
+name: TicketTestCI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Setup
+        run: |
+          git clone https://github.com/junegunn/vader.vim.git
+          git checkout -b testing_branch
+
+      - name: Run Tests
+        run: |
+          vim -Nu <(cat << VIMRC
+          filetype off
+          set rtp+=vader.vim
+          set rtp+=.
+          set rtp+=after
+          filetype plugin indent on
+          syntax enable
+          VIMRC) -c 'Vader! test/*' > /dev/null
