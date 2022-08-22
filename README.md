@@ -2,7 +2,7 @@
 
 Creates and manges git branch specific session files.
 
-![](docs/auto-demo.gif)
+![](https://user-images.githubusercontent.com/16519378/185827909-3c80e95f-668b-4d6f-b113-86d9d805eef6.gif)
 
 ## Function
 
