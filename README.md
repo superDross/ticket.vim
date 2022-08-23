@@ -58,6 +58,12 @@ Define a default branch name that will used to name all non git repo session fil
 let g:default_session_name = 'master'
 ```
 
+Define the directory you want to store all session files within:
+
+```vim
+let g:session_directory = '~/my_dir'
+```
+
 ## Installation
 
 With [Vim-Plug](https://github.com/junegunn/vim-plug):
@@ -79,15 +85,21 @@ end)
 The session files are stored as below; git repository directory name with all branch specific session and note files within it.
 
 ```
-~/.tickets/
+~/.local/share/tickets-vim/
 │
 └── <repository-name>/
    ├── <branch-name>.md
    └── <branch-name>.vim
 ```
 
+The legacy root directory is `~/.tickets`, however, if this is not currently being used (or it has not been set via `g:session_directory`) then the [XDG base directory spec](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) will be followed.
+
+This will check and prioritise the directory set in `$XDG_CONFIG_DATA`, if not set then `~/.local/share` will be used.
+
 ## Limitations
 
 - The organisation and storage of the branch based session files depends upon the repo & git branch pairing name being unique.
 
 - Only works within \*NIX based systems.
+
+- This plugin assumes it has the appropriate permissions for modifying files locally

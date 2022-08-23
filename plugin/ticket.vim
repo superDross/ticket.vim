@@ -17,6 +17,28 @@ if exists('g:default_session_name') ==# 0
 endif
 
 
+function! GetRootTicketDir(legacy_dir)
+  " determines root directory to store all session and notes files within.
+  " we follow the XDG specification unless an legacy directory already exists
+  " in which case we return it.
+  if $XDG_CONFIG_DATA != ''
+    return $XDG_CONFIG_DATA . '/tickets-vim'
+  elseif isdirectory(expand(a:legacy_dir))
+    return expand(a:legacy_dir)
+  else
+    call system('mkdir -p ~/.local/share')
+    return expand('~/.local/share/tickets-vim')
+  endif
+endfunction
+
+
+if exists('g:session_directory') ==# 0
+  " ~/.tickets should be hard coded within the function, it is not simply for
+  " testing purposes
+  let g:session_directory = GetRootTicketDir('~/.tickets')
+endif
+
+
 function! CheckFileExists(file)
   " checks if parsed file path exists otherwise raises an error
   try
@@ -71,7 +93,7 @@ function! GetSessionDirPath()
   " uses the git branch name in the current workind dir or the dirname
   " as the basename for the directory.
   let name = CheckIfGitRepo() == 1 ? GetRepoName() : system('basename $(pwd) | tr -d "\n"')
-  let dirpath = '~/.tickets/' . name
+  let dirpath = g:session_directory . '/' . name
   call system('mkdir -p ' . dirpath)
   return dirpath
 endfunction
@@ -140,7 +162,7 @@ endfunction
 
 function! GrepNotes(query)
   " returns all notes file paths that contain the given query
-  let ticketsdir = expand('~') . '/.tickets/**/*.md'
+  let ticketsdir = g:session_directory . '/**/*.md'
   execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
 endfunction
 
@@ -160,7 +182,7 @@ function! GetAllSessionNames(repo)
   " returns all session names stripped of feature/bugfix prefix & extension
   " for a given repo
   return split(system(
-  \  'find ~/.tickets/' . a:repo . ' -type f -name "*.vim" |
+  \  'find ' . g:session_directory . '/' . a:repo . ' -type f -name "*.vim" |
   \   xargs -I {} basename {} |
   \   sed "s/.\{4\}$//"'
   \))
@@ -181,7 +203,7 @@ function DeleteOldSessions(force_input)
   for session in GetAllSessionNames(repo)
     if index(branches, session) == -1  " if session not in branches
       let sessionpath = system(
-      \  'find ~/.tickets/' . repo . ' -type f -name ' . '*' . session . '.vim'
+      \  'find ' . g:session_directory . '/' . repo . ' -type f -name ' . '*' . session . '.vim'
       \)
       call add(deletelist, sessionpath)
     endif
@@ -246,4 +268,4 @@ command! -nargs=1 GrepNotes :call GrepNotes(<f-args>)
 command! -bang -nargs=* GrepTicketNotesFzf
   \ call fzf#vim#grep(
   \   'rg --type md --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview({'dir': '~/.tickets/'}), <bang>0)
+  \   fzf#vim#with_preview({'dir': g:session_directory}), <bang>0)

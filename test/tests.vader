@@ -7,6 +7,9 @@ Before:
 After:
   let g:auto_ticket = 0
   let g:ticket_black_list = []
+  let g:default_session_name = 'main'
+  let g:session_directory = '~/.tickets'
+  let $XDG_CONFIG_DATA = ''
   call system('rm ~/test.file')
 
 
@@ -167,6 +170,15 @@ Execute(expect DetermineAuto fail):
     \ DetermineAuto(),
     \ 0
 
+Execute(expect DetermineAuto fail because not in git repo):
+  :cd /
+  let g:ticket_auto_save = 1
+  AssertEqual
+    \ DetermineAuto(),
+    \ 0
+Then(go back to original dir):
+  :cd - 
+
 Execute(expect DetermineAuto fail due to black listed branch):
   let g:auto_ticket = 1
   let branchname = system(
@@ -203,14 +215,19 @@ Execute(expect DeleteOldSessions to fail in a non git repo):
 Then(go back to original dir):
   :cd -
 
-" TODO: does not work during travis ci but does locally
-" I suspect it has something to do with the changing dirs, perhaps
-" `cd -` is not being executed
+Execute(expect GetRootTicketDir to return XDG dir when set):
+  let $XDG_CONFIG_DATA = expand('~')
+  AssertEqual
+    \ GetRootTicketDir('~/.tickets'),
+    \ expand('~') . '/tickets-vim'
 
-" Execute(expect DetermineAuto fail because not in git repo):
-"   :cd /
-"   let g:ticket_auto_save = 1
-"   AssertEqual
-"     \ DetermineAuto(),
-"     \ 0
-"   :cd - 
+Execute(expect GetRootTicketDir to return legacy directory):
+  AssertEqual
+    \ GetRootTicketDir('~/.tickets'),
+    \ expand('~/.tickets')
+
+Execute(expect GetRootTicketDir to return local share directory):
+  call system('mkdir -p ~/.local/share')
+  AssertEqual
+  \ GetRootTicketDir('~/.dir_does_not_exist'),
+  \ expand('~/.local/share/tickets-vim')
