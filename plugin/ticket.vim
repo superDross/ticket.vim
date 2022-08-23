@@ -229,12 +229,6 @@ endfunction
 function! DetermineAuto()
   " determines whether we auto save/open or not open file opening
   if g:auto_ticket
-    " only autosave if file is in a valid git repo
-    try
-      call CheckIfGitRepo()
-    catch /.*/
-      return 0
-    endtry
     " only autosave if the current branch is not black listed
     if BranchInBlackList() ==# 1
       return 0
@@ -250,7 +244,7 @@ augroup ticket
   if DetermineAuto()
     let session_file_path = GetSessionFilePath('.vim')
     if filereadable(expand(session_file_path))
-      autocmd VimEnter * :if argc() ==# 0 | call OpenSession() | endif
+      autocmd VimEnter * call OpenSession()
     else
       call CreateSession()
     endif

@@ -172,10 +172,10 @@ Execute(expect DetermineAuto fail):
 
 Execute(expect DetermineAuto fail because not in git repo):
   :cd /
-  let g:ticket_auto_save = 1
+  let g:auto_ticket = 1
   AssertEqual
     \ DetermineAuto(),
-    \ 0
+    \ 1
 Then(go back to original dir):
   :cd - 
 
