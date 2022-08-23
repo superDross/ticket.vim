@@ -18,6 +18,7 @@ endif
 
 
 function! CheckFileExists(file)
+  " checks if parsed file path exists otherwise raises an error
   try
     if filereadable(expand(a:file))
       return a:file
@@ -31,6 +32,7 @@ endfunction
 
 
 function! CheckIfGitRepo()
+  " returns 1 if working directory is a git repository, otherwise returns 0
   let msg = system('git log')
   try
     if matchstr(msg, '.*not a git repository.*') ==# msg
@@ -59,11 +61,15 @@ endfunction
 
 
 function! GetBranchName()
+  " returns the branch name checked out in the current working directory
   return system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"')
 endfunction
 
 
 function! GetSessionDirPath()
+  " returns and creates the directory path for a session file.
+  " uses the git branch name in the current workind dir or the dirname
+  " as the basename for the directory.
   let name = CheckIfGitRepo() == 1 ? GetRepoName() : system('basename $(pwd) | tr -d "\n"')
   let dirpath = '~/.tickets/' . name
   call system('mkdir -p ' . dirpath)
@@ -72,6 +78,8 @@ endfunction
 
 
 function! BranchInBlackList()
+  " determines if the branch name in the working directory is within the user
+  " defined black list
   let branchname = GetBranchName()
   if (index(g:ticket_black_list, branchname) >= 0)
     return 1
@@ -81,6 +89,9 @@ endfunction
 
 
 function! GetSessionFilePath(extension)
+  " creates a filepath to the session.
+  " this is determined by the git branch in the working directory or by the
+  " directory name (if not git repo) and the given extension.
   let branchname = CheckIfGitRepo() == 1 ? GetBranchName() : g:default_session_name
   let dirpath = GetSessionDirPath()
   return dirpath . '/' . branchname . a:extension
@@ -88,6 +99,7 @@ endfunction
 
 
 function! GetSessionFilePathOnlyIfExists(extension)
+  " returns the session filepath only if it exists within .ticket directory
   let filepath = GetSessionFilePath(a:extension)
   call CheckFileExists(filepath)
   return filepath
@@ -95,30 +107,39 @@ endfunction
 
 
 function! CreateSession()
+  " creates or overwrites the session file associated with the git branch or
+  " directory name in the working directory
   let sessionfile = GetSessionFilePath('.vim')
   execute 'mksession! ' . sessionfile
 endfunction
 
 
 function! OpenSession()
+  " opens the session file associated with the git branch or directory name in
+  " the working directory
   let sessionfile = GetSessionFilePathOnlyIfExists('.vim')
   execute 'source ' . sessionfile
 endfunction
 
 
 function! CreateNote()
+  " creates or overwrites the note file associated with the git branch or
+  " directory name in the working directory
   let mdfile = GetSessionFilePath('.md')
   execute 'w ' . mdfile
 endfunction
 
 
 function! OpenNote()
+  " opens the note file associated with the git branch or directory name in
+  " the working directory
   let mdfile = GetSessionFilePath('.md')
   execute 'e ' . mdfile
 endfunction
 
 
 function! GrepNotes(query)
+  " returns all notes file paths that contain the given query
   let ticketsdir = expand('~') . '/.tickets/**/*.md'
   execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
 endfunction
@@ -148,7 +169,7 @@ endfunction
 
 function DeleteOldSessions(force_input)
   " removes sessions files that no longer have local branches
-
+  " only works within directories that are git repositories
   if CheckIfGitRepo() == 0
       throw 'Sessions can only be deleted within a git repository.'
   endif
@@ -184,6 +205,7 @@ endfunction
 
 
 function! DetermineAuto()
+  " determines whether we auto save/open or not open file opening
   if g:auto_ticket
     " only autosave if file is in a valid git repo
     try
