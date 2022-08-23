@@ -64,36 +64,36 @@ Execute(expect GetRepoName pass):
 
 Execute(expect GitDirPath pass):
   AssertEqual
-    \ GetTicketDirPath(),
+    \ GetSessionDirPath(),
     \ '~/.tickets/ticket.vim'
 
 Execute(expect GitDirPath fail):
   :cd /tmp/temp
   AssertEqual
-    \ GetTicketDirPath(),
+    \ GetSessionDirPath(),
     \ '~/.tickets/temp'
 Then(go back to original dir):
   :cd -
 
-Execute(expect GetTicketFilePath session pass):
+Execute(expect GetSessionFilePath session pass):
   AssertEqual
-    \ GetTicketFilePath('.vim'),
+    \ GetSessionFilePath('.vim'),
     \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
 
-Execute(expect GetTicketFilePath markdown pass):
+Execute(expect GetSessionFilePath markdown pass):
   AssertEqual
-    \ GetTicketFilePath('.md'),
+    \ GetSessionFilePath('.md'),
     \ '~/.tickets/ticket.vim/' . GetBranchName() . '.md'
 
-Execute(expect GetTicketFilePathOnlyIfExists pass):
+Execute(expect GetSessionFilePathOnlyIfExists pass):
   call CreateSession()
   AssertEqual
-    \ GetTicketFilePathOnlyIfExists('.vim'),
+    \ GetSessionFilePathOnlyIfExists('.vim'),
     \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
 
-Execute(expect GetTicketFilePathOnlyIfExists fail):
+Execute(expect GetSessionFilePathOnlyIfExists fail):
   AssertThrows
-    \ GetTicketFilePathOnlyIfExists('.py')
+    \ GetSessionFilePathOnlyIfExists('.py')
 
 Execute(expect CreateSession pass):
   call CreateSession()
@@ -124,11 +124,11 @@ Then(go back to original dir):
   let g:default_session_name = 'main'
   :cd -
 
-Execute(expect GetTicketFilePathOnlyIfExists pass when in non git repo):
+Execute(expect GetSessionFilePathOnlyIfExists pass when in non git repo):
   :cd /tmp/temp
   call CreateSession()
   AssertEqual
-    \ GetTicketFilePathOnlyIfExists('.vim'),
+    \ GetSessionFilePathOnlyIfExists('.vim'),
     \ '~/.tickets/temp/main.vim'
 Then(go back to original dir):
   :cd -

@@ -1,4 +1,4 @@
-" ticket.vim - Ticket
+" ticket.vim - Session
 " Author:      David Ross <https://github.com/superDross/>
 
 
@@ -63,7 +63,7 @@ function! GetBranchName()
 endfunction
 
 
-function! GetTicketDirPath()
+function! GetSessionDirPath()
   let name = CheckIfGitRepo() == 1 ? GetRepoName() : system('basename $(pwd) | tr -d "\n"')
   let dirpath = '~/.tickets/' . name
   call system('mkdir -p ' . dirpath)
@@ -80,40 +80,40 @@ function! BranchInBlackList()
 endfunction
 
 
-function! GetTicketFilePath(extension)
+function! GetSessionFilePath(extension)
   let branchname = CheckIfGitRepo() == 1 ? GetBranchName() : g:default_session_name
-  let dirpath = GetTicketDirPath()
+  let dirpath = GetSessionDirPath()
   return dirpath . '/' . branchname . a:extension
 endfunction
 
 
-function! GetTicketFilePathOnlyIfExists(extension)
-  let filepath = GetTicketFilePath(a:extension)
+function! GetSessionFilePathOnlyIfExists(extension)
+  let filepath = GetSessionFilePath(a:extension)
   call CheckFileExists(filepath)
   return filepath
 endfunction
 
 
 function! CreateSession()
-  let sessionfile = GetTicketFilePath('.vim')
+  let sessionfile = GetSessionFilePath('.vim')
   execute 'mksession! ' . sessionfile
 endfunction
 
 
 function! OpenSession()
-  let sessionfile = GetTicketFilePathOnlyIfExists('.vim')
+  let sessionfile = GetSessionFilePathOnlyIfExists('.vim')
   execute 'source ' . sessionfile
 endfunction
 
 
 function! CreateNote()
-  let mdfile = GetTicketFilePath('.md')
+  let mdfile = GetSessionFilePath('.md')
   execute 'w ' . mdfile
 endfunction
 
 
 function! OpenNote()
-  let mdfile = GetTicketFilePath('.md')
+  let mdfile = GetSessionFilePath('.md')
   execute 'e ' . mdfile
 endfunction
 
@@ -204,7 +204,7 @@ endfunction
 augroup ticket
   " automatically open and save sessions
   if DetermineAuto()
-    let session_file_path = GetTicketFilePath('.vim')
+    let session_file_path = GetSessionFilePath('.vim')
     if filereadable(expand(session_file_path))
       autocmd VimEnter * :if argc() ==# 0 | call OpenSession() | endif
     else
