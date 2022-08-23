@@ -1,8 +1,5 @@
 " ticket.vim - Ticket
 " Author:      David Ross <https://github.com/superDross/>
-" Version:     0.3.0
-" TODO:
-"   - place functions into different modules
 
 
 if exists('g:auto_ticket') ==# 0
@@ -12,6 +9,11 @@ endif
 
 if exists('g:ticket_black_list') ==# 0
   let g:ticket_black_list = []
+endif
+
+
+if exists('g:default_session_name') ==# 0
+  let g:default_session_name = 'main'
 endif
 
 
@@ -35,9 +37,11 @@ function! CheckIfGitRepo()
       throw 'not a repo'
     elseif matchstr(msg, '.*does not have any commits yet.*') ==# msg
       throw 'no commits'
+    else
+      return 1
     endif
   catch /.*not a repo/
-    echoerr 'The current directory is not a git repository'
+    return 0
   catch /.*no commits/
     echoerr 'Make an initial branch commit before saving a session'
   endtry
@@ -60,7 +64,8 @@ endfunction
 
 
 function! GetTicketDirPath()
-  let dirpath = '~/.tickets/' . GetRepoName()
+  let name = CheckIfGitRepo() == 1 ? GetRepoName() : system('basename $(pwd) | tr -d "\n"')
+  let dirpath = '~/.tickets/' . name
   call system('mkdir -p ' . dirpath)
   return dirpath
 endfunction
@@ -76,8 +81,7 @@ endfunction
 
 
 function! GetTicketFilePath(extension)
-  call CheckIfGitRepo()
-  let branchname = GetBranchName()
+  let branchname = CheckIfGitRepo() == 1 ? GetBranchName() : g:default_session_name
   let dirpath = GetTicketDirPath()
   return dirpath . '/' . branchname . a:extension
 endfunction
@@ -144,6 +148,11 @@ endfunction
 
 function DeleteOldSessions(force_input)
   " removes sessions files that no longer have local branches
+
+  if CheckIfGitRepo() == 0
+      throw 'Sessions can only be deleted within a git repository.'
+  endif
+	
   let branches = GetAllBranchNames()
   let repo = GetRepoName()
 

@@ -1,6 +1,8 @@
 Before:
   call system('touch ~/test.file')
   call system('touch ~/.tickets/ticket.vim/old-session.vim')
+  call system('mkdir -p /tmp/temp')
+  call system('mkdir -p /tmp/temp2')
 
 After:
   let g:auto_ticket = 0
@@ -37,19 +39,22 @@ Execute(expect CheckFileExists pass):
 
 Execute(expect CheckIfGitRepo fail):
   :cd /
-  AssertThrows
-    \ CheckIfGitRepo()
+  AssertEqual
+    \ CheckIfGitRepo(),
+    \ 0
+Then(go back to original dir):
   :cd -
 
 Execute(expect CheckIfGitRepo pass):
   AssertEqual
     \ CheckIfGitRepo(),
-    \ 0
+    \ 1
 
 Execute(expect GetRepoName fail):
   :cd /
   AssertThrows
     \ GetRepoName()
+Then(go back to original dir):
   :cd -
 
 Execute(expect GetRepoName pass):
@@ -63,9 +68,11 @@ Execute(expect GitDirPath pass):
     \ '~/.tickets/ticket.vim'
 
 Execute(expect GitDirPath fail):
-  :cd /
-  AssertThrows
-    \ GetTicketDirPath()
+  :cd /tmp/temp
+  AssertEqual
+    \ GetTicketDirPath(),
+    \ '~/.tickets/temp'
+Then(go back to original dir):
   :cd -
 
 Execute(expect GetTicketFilePath session pass):
@@ -94,6 +101,37 @@ Execute(expect CreateSession pass):
     \ filereadable(
     \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.vim')
     \ )
+
+Execute(expect CreateSession non git based session to pass):
+  :cd /tmp/temp
+  call CreateSession()
+  Assert
+    \ filereadable(
+    \   expand('~/.tickets/temp/main.vim')
+    \ )
+Then(go back to original dir):
+  :cd -
+
+Execute(expect CreateSession different default session name works):
+  :cd /tmp/temp2
+  let g:default_session_name = 'different'
+  call CreateSession()
+  Assert
+    \ filereadable(
+    \   expand('~/.tickets/temp2/different.vim')
+    \ )
+Then(go back to original dir):
+  let g:default_session_name = 'main'
+  :cd -
+
+Execute(expect GetTicketFilePathOnlyIfExists pass when in non git repo):
+  :cd /tmp/temp
+  call CreateSession()
+  AssertEqual
+    \ GetTicketFilePathOnlyIfExists('.vim'),
+    \ '~/.tickets/temp/main.vim'
+Then(go back to original dir):
+  :cd -
 
 Execute(expect CreateNote pass):
   call CreateNote()
@@ -157,6 +195,13 @@ Execute(expect DeleteOldSessions remove old-session.vim):
   AssertEqual
     \ GetAllSessionNames('ticket.vim'),
     \ []
+
+Execute(expect DeleteOldSessions to fail in a non git repo):
+  :cd /tmp/temp
+  AssertThrows
+    \ DeleteOldSession(1)
+Then(go back to original dir):
+  :cd -
 
 " TODO: does not work during travis ci but does locally
 " I suspect it has something to do with the changing dirs, perhaps
