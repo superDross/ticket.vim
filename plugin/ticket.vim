@@ -21,8 +21,8 @@ function! GetRootTicketDir(legacy_dir)
   " determines root directory to store all session and notes files within.
   " we follow the XDG specification unless an legacy directory already exists
   " in which case we return it.
-  if $XDG_CONFIG_DATA != ''
-    return $XDG_CONFIG_DATA . '/tickets-vim'
+  if $XDG_DATA_HOME != ''
+    return $XDG_DATA_HOME . '/tickets-vim'
   elseif isdirectory(expand(a:legacy_dir))
     return expand(a:legacy_dir)
   else

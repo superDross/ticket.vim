@@ -94,7 +94,7 @@ The session files are stored as below; git repository directory name with all br
 
 The legacy root directory is `~/.tickets`, however, if this is not currently being used (or it has not been set via `g:session_directory`) then the [XDG base directory spec](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) will be followed.
 
-This will check and prioritise the directory set in `$XDG_CONFIG_DATA`, if not set then `~/.local/share` will be used.
+This will check and prioritise the directory set in `$XDG_DATA_HOME`, if not set then `~/.local/share` will be used.
 
 ## Limitations
 

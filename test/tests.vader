@@ -9,7 +9,7 @@ After:
   let g:ticket_black_list = []
   let g:default_session_name = 'main'
   let g:session_directory = '~/.tickets'
-  let $XDG_CONFIG_DATA = ''
+  let $XDG_DATA_HOME = ''
   call system('rm ~/test.file')
 
 
@@ -216,7 +216,7 @@ Then(go back to original dir):
   :cd -
 
 Execute(expect GetRootTicketDir to return XDG dir when set):
-  let $XDG_CONFIG_DATA = expand('~')
+  let $XDG_DATA_HOME = expand('~')
   AssertEqual
     \ GetRootTicketDir('~/.tickets'),
     \ expand('~') . '/tickets-vim'
