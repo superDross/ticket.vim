@@ -249,16 +249,27 @@ function! DetermineAuto()
 endfunction
 
 
+function! AutoOpenSession()
+  " opens session only if no files arguments have been parsed to vim at the
+  " command line then force redraw to remove any visual artifacts.
+  if argc() ==# 0
+    call OpenSession()
+    redraw!
+  endif
+endfunction
+
+
 augroup ticket
   " automatically open and save sessions
   if DetermineAuto()
     let session_file_path = GetSessionFilePath('.vim')
     if filereadable(expand(session_file_path))
-      autocmd VimEnter * call OpenSession()
+      " ++nested is required as downstream operations trigger autocommands
+      autocmd VimEnter * ++nested :call AutoOpenSession()
     else
       call CreateSession()
     endif
-    autocmd VimLeavePre,BufWritePost * :call CreateSession()
+    autocmd VimLeavePre,BufWritePost * ++nested :call CreateSession()
   endif
 augroup END
 
