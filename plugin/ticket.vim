@@ -226,11 +226,21 @@ function DeleteOldSessions(force_input)
 endfunction
 
 
+function! IfBufferGitOperation()
+  " determines if current buffer is a git commit or rebase type
+  let buftype = fnamemodify(bufname("%"), ":t")
+  if buftype ==# 'COMMIT_EDITMSG' || buftype ==# 'git-rebase-todo'
+    return 1
+  endif
+  return 0
+endfunction
+
+
 function! DetermineAuto()
   " determines whether we auto save/open or not open file opening
   if g:auto_ticket
-    " only autosave if the current branch is not black listed
-    if BranchInBlackList() ==# 1
+    " only autosave if the current branch is not black listed or a git op
+    if BranchInBlackList() ==# 1 || IfBufferGitOperation() ==# 1
       return 0
     endif
 
