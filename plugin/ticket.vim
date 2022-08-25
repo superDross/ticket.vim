@@ -55,20 +55,8 @@ endfunction
 
 function! CheckIfGitRepo()
   " returns 1 if working directory is a git repository, otherwise returns 0
-  let msg = system('git log')
-  try
-    if matchstr(msg, '.*not a git repository.*') ==# msg
-      throw 'not a repo'
-    elseif matchstr(msg, '.*does not have any commits yet.*') ==# msg
-      throw 'no commits'
-    else
-      return 1
-    endif
-  catch /.*not a repo/
-    return 0
-  catch /.*no commits/
-    echoerr 'Make an initial branch commit before saving a session'
-  endtry
+  let msg = system('git rev-parse --is-inside-work-tree')
+  return matchstr(msg, '.*not a git repository.*') ==# msg ? 0 : 1
 endfunction
 
 
