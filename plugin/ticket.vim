@@ -1,258 +1,30 @@
-" ticket.vim - Session
+" ticket.vim - Session Management Tooling
 " Author:      David Ross <https://github.com/superDross/>
 
 
-if exists('g:auto_ticket') ==# 0
+if !exists('g:auto_ticket')
   let g:auto_ticket = 0
 endif
 
 
-if exists('g:ticket_black_list') ==# 0
+if !exists('g:ticket_black_list')
   let g:ticket_black_list = []
 endif
 
 
-if exists('g:default_session_name') ==# 0
+if !exists('g:default_session_name')
   let g:default_session_name = 'main'
 endif
 
 
-function! GetRootTicketDir(legacy_dir)
-  " determines root directory to store all session and notes files within.
-  " we follow the XDG specification unless an legacy directory already exists
-  " in which case we return it.
-  if $XDG_DATA_HOME != ''
-    return $XDG_DATA_HOME . '/tickets-vim'
-  elseif isdirectory(expand(a:legacy_dir))
-    return expand(a:legacy_dir)
-  else
-    call system('mkdir -p ~/.local/share')
-    return expand('~/.local/share/tickets-vim')
-  endif
-endfunction
-
-
-if exists('g:session_directory') ==# 0
+if !exists('g:session_directory')
   " ~/.tickets should be hard coded within the function, it is not simply for
   " testing purposes
   let g:session_directory = GetRootTicketDir('~/.tickets')
 endif
 
 
-function! CheckFileExists(file)
-  " checks if parsed file path exists otherwise raises an error
-  try
-    if filereadable(expand(a:file))
-      return a:file
-    else
-      throw 'no file'
-    endif
-  catch /.*no file/
-    echoerr 'File ' . a:file . ' does not exist'
-  endtry
-endfunction
-
-
-function! CheckIfGitRepo()
-  " returns 1 if working directory is a git repository, otherwise returns 0
-  let msg = system('git rev-parse --is-inside-work-tree')
-  return matchstr(msg, '.*not a git repository.*') ==# msg ? 0 : 1
-endfunction
-
-
-function! GetRepoName()
-  " returns remote name if set, otherwise top directory name is returned
-  if system('git config --get remote.origin.url') !=# ''
-    return system('basename -s .git `git config --get remote.origin.url` | tr -d "\n"')
-  else
-    return system('basename `git rev-parse --show-toplevel` | tr -d "\n"')
-  endif
-endfunction
-
-
-function! GetBranchName()
-  " returns the branch name checked out in the current working directory
-  return system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"')
-endfunction
-
-
-function! GetSessionDirPath()
-  " returns and creates the directory path for a session file.
-  " uses the git branch name in the current workind dir or the dirname
-  " as the basename for the directory.
-  let name = CheckIfGitRepo() == 1 ? GetRepoName() : system('basename $(pwd) | tr -d "\n"')
-  let dirpath = g:session_directory . '/' . name
-  call system('mkdir -p ' . dirpath)
-  return dirpath
-endfunction
-
-
-function! BranchInBlackList()
-  " determines if the branch name in the working directory is within the user
-  " defined black list
-  let branchname = GetBranchName()
-  if (index(g:ticket_black_list, branchname) >= 0)
-    return 1
-  endif
-  return 0
-endfunction
-
-
-function! GetSessionFilePath(extension)
-  " creates a filepath to the session.
-  " this is determined by the git branch in the working directory or by the
-  " directory name (if not git repo) and the given extension.
-  let branchname = CheckIfGitRepo() == 1 ? GetBranchName() : g:default_session_name
-  let dirpath = GetSessionDirPath()
-  return dirpath . '/' . branchname . a:extension
-endfunction
-
-
-function! GetSessionFilePathOnlyIfExists(extension)
-  " returns the session filepath only if it exists within .ticket directory
-  let filepath = GetSessionFilePath(a:extension)
-  call CheckFileExists(filepath)
-  return filepath
-endfunction
-
-
-function! CreateSession()
-  " creates or overwrites the session file associated with the git branch or
-  " directory name in the working directory
-  let sessionfile = GetSessionFilePath('.vim')
-  execute 'mksession! ' . sessionfile
-endfunction
-
-
-function! OpenSession()
-  " opens the session file associated with the git branch or directory name in
-  " the working directory
-  let sessionfile = GetSessionFilePathOnlyIfExists('.vim')
-  execute 'source ' . sessionfile
-endfunction
-
-
-function! CreateNote()
-  " creates or overwrites the note file associated with the git branch or
-  " directory name in the working directory
-  let mdfile = GetSessionFilePath('.md')
-  execute 'w ' . mdfile
-endfunction
-
-
-function! OpenNote()
-  " opens the note file associated with the git branch or directory name in
-  " the working directory
-  let mdfile = GetSessionFilePath('.md')
-  execute 'e ' . mdfile
-endfunction
-
-
-function! GrepNotes(query)
-  " returns all notes file paths that contain the given query
-  let ticketsdir = g:session_directory . '/**/*.md'
-  execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
-endfunction
-
-
-function! GetAllBranchNames()
-  " returns a list of all branch names (stripped of feature/bugfix prefix)
-  " associated within the current repo
-  return split(
-  \ system(
-  \    "git for-each-ref --format='%(refname:short)' refs/heads | sed 's@.*/@@'"
-  \ )
-  \)
-endfunction
-
-
-function! GetAllSessionNames(repo)
-  " returns all session names stripped of feature/bugfix prefix & extension
-  " for a given repo
-  return split(system(
-  \  'find ' . g:session_directory . '/' . a:repo . ' -type f -name "*.vim" |
-  \   xargs -I {} basename {} |
-  \   sed "s/.\{4\}$//"'
-  \))
-endfunction
-
-
-function DeleteOldSessions(force_input)
-  " removes sessions files that no longer have local branches
-  " only works within directories that are git repositories
-  if CheckIfGitRepo() == 0
-      throw 'Sessions can only be deleted within a git repository.'
-  endif
-	
-  let branches = GetAllBranchNames()
-  let repo = GetRepoName()
-
-  let deletelist = []
-  for session in GetAllSessionNames(repo)
-    if index(branches, session) == -1  " if session not in branches
-      let sessionpath = system(
-      \  'find ' . g:session_directory . '/' . repo . ' -type f -name ' . '*' . session . '.vim'
-      \)
-      call add(deletelist, sessionpath)
-    endif
-  endfor
-
-  if deletelist ==# []
-    echo "No sessions found to remove"
-    return
-  endif
-
-  echo join(deletelist, "\r")
-  if a:force_input == 1
-    let answer = 'y'
-  else
-    let answer = input('Are you sure you want to delete the above session files? (y/n): ')
-  endif
-
-  if answer ==# 'y'
-    for file in deletelist
-      " TODO: find out why delete() does not work here
-      call system('rm ' . file)
-    endfor
-  endif
-
-endfunction
-
-
-function! IfBufferGitOperation()
-  " determines if current buffer is a git commit or rebase type
-  let buftype = fnamemodify(bufname("%"), ":t")
-  if buftype ==# 'COMMIT_EDITMSG' || buftype ==# 'git-rebase-todo'
-    return 1
-  endif
-  return 0
-endfunction
-
-
-function! DetermineAuto()
-  " determines whether we auto save/open or not open file opening
-  if g:auto_ticket
-    " only autosave if the current branch is not black listed or a git op
-    if BranchInBlackList() ==# 1 || IfBufferGitOperation() ==# 1
-      return 0
-    endif
-
-    return 1
-  endif
-endfunction
-
-
-function! AutoOpenSession()
-  " opens session only if no files arguments have been parsed to vim at the
-  " command line then force redraw to remove any visual artifacts.
-  if argc() ==# 0
-    call OpenSession()
-    redraw!
-  endif
-endfunction
-
-
-augroup ticket
+augroup AutoTicket
   " automatically open and save sessions
   if DetermineAuto()
     let session_file_path = GetSessionFilePath('.vim')

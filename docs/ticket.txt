@@ -1,0 +1,18 @@
+*ticket.vim*  Vim session management system with a focus on git branches.
+
+===============================================================================
+Contents ~
+
+ 1. Introduction                                         |ticket-introduction|
+ 2. Commands                                                 |ticket-commands|
+  1. The |:SaveSession| command
+  2. The |:OpenSession| command
+===============================================================================
+                                                         *ticket-introduction*
+Introduction ~
+
+**Work In Progress**
+
+See the GitHub README https://github.com/superDross/ticket.vim
+ 
+===============================================================================
