@@ -197,6 +197,11 @@ function DeleteOldSessions(force_input)
     endif
   endfor
 
+  if deletelist ==# []
+    echo "No sessions found to remove"
+    return
+  endif
+
   echo join(deletelist, "\r")
   if a:force_input == 1
     let answer = 'y'
