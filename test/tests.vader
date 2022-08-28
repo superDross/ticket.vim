@@ -6,11 +6,14 @@ Before:
 
 After:
   let g:auto_ticket = 0
+  let g:auto_ticket_save = 0
+  let g:auto_ticket_open = 0
+  let g:auto_ticket_git_only = 0
   let g:ticket_black_list = []
   let g:default_session_name = 'main'
   let g:session_directory = '~/.tickets'
   let $XDG_DATA_HOME = ''
-  call system('rm ~/test.file')
+  call system('rm ~/test.file ~/.tickets/ticket.vim/*')
 
 
 Execute(expect GetBranchName pass):
@@ -157,46 +160,6 @@ Execute(expect BranchInBlackList fail):
     \ BranchInBlackList(),
     \ 0
 
-Execute(expect DetermineAuto pass):
-  let g:auto_ticket = 1
-  call CreateSession()
-  AssertEqual
-    \ DetermineAuto(),
-    \ 1
-
-Execute(expect DetermineAuto fail):
-  call CreateSession()
-  AssertEqual
-    \ DetermineAuto(),
-    \ 0
-
-Execute(expect DetermineAuto fail because not in git repo):
-  :cd /
-  let g:auto_ticket = 1
-  AssertEqual
-    \ DetermineAuto(),
-    \ 1
-Then(go back to original dir):
-  :cd - 
-
-Execute(expect DetermineAuto fail due to black listed branch):
-  let g:auto_ticket = 1
-  let branchname = system(
-    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
-    \ )
-  let g:ticket_black_list = [branchname, 'other-branch']
-  call CreateSession()
-  AssertEqual
-    \ DetermineAuto(),
-    \ 0
-
-Execute(expect DetermineAuto to pass when session file does not exist):
-  let g:auto_ticket = 1
-  call system('rm ~/.tickets/ticket.vim/' . GetBranchName() . '.vim')
-  AssertEqual
-    \ DetermineAuto(),
-    \ 1
-
 Execute(expect GetAllSessionNames to show all sessions):
   AssertEqual
     \ GetAllSessionNames('ticket.vim'),
@@ -231,3 +194,95 @@ Execute(expect GetRootTicketDir to return local share directory):
   AssertEqual
   \ GetRootTicketDir('~/.dir_does_not_exist'),
   \ expand('~/.local/share/tickets-vim')
+
+Execute(expect ShouldAutoSave should work with auto_ticket set):
+  let g:auto_ticket = 1
+  AssertEqual
+    \ ShouldAutoSave(),
+    \ 1
+
+Execute(expect ShouldAutoSave should work with auto_open set):
+  let g:auto_ticket_save = 1
+  AssertEqual
+    \ ShouldAutoSave(),
+    \ 1
+
+Execute(expect ShouldAutoSave should work with auto_git_only set):
+  let g:auto_ticket_save = 1
+  let g:auto_ticket_git_only = 1
+  AssertEqual
+    \ ShouldAutoSave(),
+    \ 1
+
+Execute(expect ShouldAutoSave should not work in current branch if black listed):
+  let g:auto_ticket_save = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+  let g:ticket_black_list = [branchname]
+  AssertEqual
+    \ ShouldAutoSave(),
+    \ 0
+
+Execute(expect ShouldAutoSave should work if outside black listed branhces):
+  let g:auto_ticket_save = 1
+  let g:ticket_black_list = ['something']
+  AssertEqual
+    \ ShouldAutoSave(),
+    \ 1
+
+Execute(expect ShouldAutoSave should not work with auto_git_only set when in root dir):
+  :cd /
+  let g:auto_ticket_save = 1
+  let g:auto_ticket_git_only = 1
+  AssertEqual
+    \ ShouldAutoSave(),
+    \ 0
+Then(go back to original dir):
+  :cd - 
+
+Execute(expect ShouldAutoOpen should work with auto_ticket set):
+  let g:auto_ticket = 1
+  AssertEqual
+    \ ShouldAutoOpen(),
+    \ 1
+
+Execute(expect ShouldAutoOpen should work with auto_open set):
+  let g:auto_ticket_open = 1
+  AssertEqual
+    \ ShouldAutoOpen(),
+    \ 1
+
+Execute(expect ShouldAutoOpen should work with auto_git_only set):
+  let g:auto_ticket_open = 1
+  let g:auto_ticket_git_only = 1
+  AssertEqual
+    \ ShouldAutoOpen(),
+    \ 1
+
+Execute(expect ShouldAutoOpen should not work in current branch if black listed):
+  let g:auto_ticket_open = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+  let g:ticket_black_list = [branchname]
+  AssertEqual
+    \ ShouldAutoOpen(),
+    \ 0
+
+Execute(expect ShouldAutoOpen should work if outside black listed branhces):
+  let g:auto_ticket_open = 1
+  let g:ticket_black_list = ['something']
+  AssertEqual
+    \ ShouldAutoOpen(),
+    \ 1
+
+Execute(expect ShouldAutoOpen should not work with auto_git_only set when in root dir):
+  :cd /
+  let g:auto_ticket_open = 1
+  let g:auto_ticket_git_only = 1
+  AssertEqual
+    \ ShouldAutoOpen(),
+    \ 0
+Then(go back to original dir):
+  :cd - 
