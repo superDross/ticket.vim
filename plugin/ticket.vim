@@ -7,6 +7,21 @@ if !exists('g:auto_ticket')
 endif
 
 
+if !exists('g:auto_ticket_open')
+  let g:auto_ticket_open = 0
+endif
+
+
+if !exists('g:auto_ticket_save')
+  let g:auto_ticket_save = 0
+endif
+
+
+if !exists('g:auto_ticket_git_only')
+  let g:auto_ticket_git_only = 0
+endif
+
+
 if !exists('g:ticket_black_list')
   let g:ticket_black_list = []
 endif
@@ -25,15 +40,16 @@ endif
 
 
 augroup AutoTicket
-  " automatically open and save sessions
-  if DetermineAuto()
+  " automatically open and/or save sessions
+  if ShouldAutoOpen()
     let session_file_path = GetSessionFilePath('.vim')
     if filereadable(expand(session_file_path))
       " ++nested is required as downstream operations trigger autocommands
       autocmd VimEnter * ++nested :call AutoOpenSession()
-    else
-      call CreateSession()
     endif
+  endif
+
+  if ShouldAutoSave()
     autocmd VimLeavePre,BufWritePost * ++nested :call CreateSession()
   endif
 augroup END
