@@ -30,11 +30,13 @@ function! ticket#notes#GrepNotesFzf(args)
   " interactively search notes contents using junegunn/fzf.vim
   if has('nvim')
     echoerr 'GrepTicketNotesFzf only works with vim'
+    return
   endif
   " NOTE: this is a little hacky, if they change this var name in fzf repo
   " this will always echoerr
   if !get(g:, 'loaded_fzf_vim', 0)
     echoerr 'junegunn/fzf.vim is not loaded or installed'
+    return
   endif
   call fzf#vim#grep(
   \   'rg --type md --column --line-number --no-heading --color=always --smart-case -- '.shellescape(a:args), 1,
