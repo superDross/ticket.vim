@@ -3,23 +3,23 @@
 " High level functions for creating, opening and getting sessions
 
 
-function! CreateSession()
+function! ticket#sessions#CreateSession()
   " creates or overwrites the session file associated with the git branch or
   " directory name in the working directory
-  let sessionfile = GetSessionFilePath('.vim')
+  let sessionfile = ticket#files#GetSessionFilePath('.vim')
   execute 'mksession! ' . sessionfile
 endfunction
 
 
-function! OpenSession()
+function! ticket#sessions#OpenSession()
   " opens the session file associated with the git branch or directory name in
   " the working directory
-  let sessionfile = GetSessionFilePathOnlyIfExists('.vim')
+  let sessionfile = ticket#files#GetSessionFilePathOnlyIfExists('.vim')
   execute 'source ' . sessionfile
 endfunction
 
 
-function! GetAllSessionNames(repo)
+function! ticket#sessions#GetAllSessionNames(repo)
   " returns all session names stripped of feature/bugfix prefix & extension
   " for a given repo
   return split(system(

@@ -16,12 +16,12 @@ After:
   call system('rm ~/test.file ~/.tickets/ticket.vim/*')
 
 
-Execute(expect GetBranchName pass):
+Execute(expect ticket#git#GetBranchName pass):
   let branchname = system(
     \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
     \ )
   AssertEqual
-    \ GetBranchName(),
+    \ ticket#git#GetBranchName(),
     \ branchname
 
 Execute(expect g:auto_ticket to autoset to zero):
@@ -34,83 +34,83 @@ Execute(expect g:ticket_black_list to autoset to empty list):
     \ g:ticket_black_list,
     \ []
 
-Execute(expect CheckFileExists fail):
+Execute(expect ticket#files#CheckFileExists fail):
   AssertThrows
-    \ CheckFileExists('/home/nonfile')
+    \ ticket#files#CheckFileExists('/home/nonfile')
 
-Execute(expect CheckFileExists pass):
+Execute(expect ticket#files#CheckFileExists pass):
   AssertEqual
-    \ CheckFileExists(expand('~') . '/test.file'),
+    \ ticket#files#CheckFileExists(expand('~') . '/test.file'),
     \ expand('~') . '/test.file'
 
-Execute(expect CheckIfGitRepo fail):
+Execute(expect ticket#git#CheckIfGitRepo fail):
   :cd /
   AssertEqual
-    \ CheckIfGitRepo(),
+    \ ticket#git#CheckIfGitRepo(),
     \ 0
 Then(go back to original dir):
   :cd -
 
-Execute(expect CheckIfGitRepo pass):
+Execute(expect ticket#git#CheckIfGitRepo pass):
   AssertEqual
-    \ CheckIfGitRepo(),
+    \ ticket#git#CheckIfGitRepo(),
     \ 1
 
-Execute(expect GetRepoName fail):
+Execute(expect ticket#git#GetRepoName fail):
   :cd /
   AssertThrows
-    \ GetRepoName()
+    \ ticket#git#GetRepoName()
 Then(go back to original dir):
   :cd -
 
-Execute(expect GetRepoName pass):
+Execute(expect ticket#git#GetRepoName pass):
   AssertEqual
-    \ GetRepoName(),
+    \ ticket#git#GetRepoName(),
     \ 'ticket.vim'
 
 Execute(expect GitDirPath pass):
   AssertEqual
-    \ GetSessionDirPath(),
+    \ ticket#files#GetSessionDirPath(),
     \ '~/.tickets/ticket.vim'
 
 Execute(expect GitDirPath fail):
   :cd /tmp/temp
   AssertEqual
-    \ GetSessionDirPath(),
+    \ ticket#files#GetSessionDirPath(),
     \ '~/.tickets/temp'
 Then(go back to original dir):
   :cd -
 
-Execute(expect GetSessionFilePath session pass):
+Execute(expect ticket#files#GetSessionFilePath session pass):
   AssertEqual
-    \ GetSessionFilePath('.vim'),
-    \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
+    \ ticket#files#GetSessionFilePath('.vim'),
+    \ '~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
 
-Execute(expect GetSessionFilePath markdown pass):
+Execute(expect ticket#files#GetSessionFilePath markdown pass):
   AssertEqual
-    \ GetSessionFilePath('.md'),
-    \ '~/.tickets/ticket.vim/' . GetBranchName() . '.md'
+    \ ticket#files#GetSessionFilePath('.md'),
+    \ '~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.md'
 
-Execute(expect GetSessionFilePathOnlyIfExists pass):
-  call CreateSession()
+Execute(expect ticket#files#GetSessionFilePathOnlyIfExists pass):
+  call ticket#sessions#CreateSession()
   AssertEqual
-    \ GetSessionFilePathOnlyIfExists('.vim'),
-    \ '~/.tickets/ticket.vim/' . GetBranchName() . '.vim'
+    \ ticket#files#GetSessionFilePathOnlyIfExists('.vim'),
+    \ '~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
 
-Execute(expect GetSessionFilePathOnlyIfExists fail):
+Execute(expect ticket#files#GetSessionFilePathOnlyIfExists fail):
   AssertThrows
-    \ GetSessionFilePathOnlyIfExists('.py')
+    \ ticket#files#GetSessionFilePathOnlyIfExists('.py')
 
-Execute(expect CreateSession pass):
-  call CreateSession()
+Execute(expect ticket#sessions#CreateSession pass):
+  call ticket#sessions#CreateSession()
   Assert
     \ filereadable(
-    \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.vim')
+    \   expand('~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim')
     \ )
 
-Execute(expect CreateSession non git based session to pass):
+Execute(expect ticket#sessions#CreateSession non git based session to pass):
   :cd /tmp/temp
-  call CreateSession()
+  call ticket#sessions#CreateSession()
   Assert
     \ filereadable(
     \   expand('~/.tickets/temp/main.vim')
@@ -118,10 +118,10 @@ Execute(expect CreateSession non git based session to pass):
 Then(go back to original dir):
   :cd -
 
-Execute(expect CreateSession different default session name works):
+Execute(expect ticket#sessions#CreateSession different default session name works):
   :cd /tmp/temp2
   let g:default_session_name = 'different'
-  call CreateSession()
+  call ticket#sessions#CreateSession()
   Assert
     \ filereadable(
     \   expand('~/.tickets/temp2/different.vim')
@@ -130,159 +130,159 @@ Then(go back to original dir):
   let g:default_session_name = 'main'
   :cd -
 
-Execute(expect GetSessionFilePathOnlyIfExists pass when in non git repo):
+Execute(expect ticket#files#GetSessionFilePathOnlyIfExists pass when in non git repo):
   :cd /tmp/temp
-  call CreateSession()
+  call ticket#sessions#CreateSession()
   AssertEqual
-    \ GetSessionFilePathOnlyIfExists('.vim'),
+    \ ticket#files#GetSessionFilePathOnlyIfExists('.vim'),
     \ '~/.tickets/temp/main.vim'
 Then(go back to original dir):
   :cd -
 
-Execute(expect CreateNote pass):
-  call CreateNote()
+Execute(expect ticket#notes#CreateNote pass):
+  call ticket#notes#CreateNote()
   Assert
     \ filereadable(
-    \   expand('~/.tickets/ticket.vim/' . GetBranchName() . '.md')
+    \   expand('~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.md')
     \ )
 
-Execute(expect BranchInBlackList pass):
+Execute(expect ticket#blacklist#BranchInBlackList pass):
   let branchname = system(
     \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
     \ )
   let g:ticket_black_list = [branchname, 'other-branch']
   AssertEqual
-    \ BranchInBlackList(),
+    \ ticket#blacklist#BranchInBlackList(),
     \ 1
 
-Execute(expect BranchInBlackList fail):
+Execute(expect ticket#blacklist#BranchInBlackList fail):
   AssertEqual
-    \ BranchInBlackList(),
+    \ ticket#blacklist#BranchInBlackList(),
     \ 0
 
-Execute(expect GetAllSessionNames to show all sessions):
+Execute(expect ticket#sessions#GetAllSessionNames to show all sessions):
   AssertEqual
-    \ GetAllSessionNames('ticket.vim'),
+    \ ticket#sessions#GetAllSessionNames('ticket.vim'),
     \ ['old-session']
 
-Execute(expect DeleteOldSessions remove old-session.vim):
-  call DeleteOldSessions(1)
+Execute(expect ticket#deletion#DeleteOldSessions remove old-session.vim):
+  call ticket#deletion#DeleteOldSessions(1)
   AssertEqual
-    \ GetAllSessionNames('ticket.vim'),
+    \ ticket#sessions#GetAllSessionNames('ticket.vim'),
     \ []
 
-Execute(expect DeleteOldSessions to fail in a non git repo):
+Execute(expect ticket#deletion#DeleteOldSessions to fail in a non git repo):
   :cd /tmp/temp
   AssertThrows
-    \ DeleteOldSession(1)
+    \ ticket#deletion#DeleteOldSession(1)
 Then(go back to original dir):
   :cd -
 
-Execute(expect GetRootTicketDir to return XDG dir when set):
+Execute(expect ticket#files#GetRootTicketDir to return XDG dir when set):
   let $XDG_DATA_HOME = expand('~')
   AssertEqual
-    \ GetRootTicketDir('~/.tickets'),
+    \ ticket#files#GetRootTicketDir('~/.tickets'),
     \ expand('~') . '/tickets-vim'
 
-Execute(expect GetRootTicketDir to return legacy directory):
+Execute(expect ticket#files#GetRootTicketDir to return legacy directory):
   AssertEqual
-    \ GetRootTicketDir('~/.tickets'),
+    \ ticket#files#GetRootTicketDir('~/.tickets'),
     \ expand('~/.tickets')
 
-Execute(expect GetRootTicketDir to return local share directory):
+Execute(expect ticket#files#GetRootTicketDir to return local share directory):
   call system('mkdir -p ~/.local/share')
   AssertEqual
-  \ GetRootTicketDir('~/.dir_does_not_exist'),
+  \ ticket#files#GetRootTicketDir('~/.dir_does_not_exist'),
   \ expand('~/.local/share/tickets-vim')
 
-Execute(expect ShouldAutoSave should work with auto_ticket set):
+Execute(expect ticket#auto#ShouldAutoSave should work with auto_ticket set):
   let g:auto_ticket = 1
   AssertEqual
-    \ ShouldAutoSave(),
+    \ ticket#auto#ShouldAutoSave(),
     \ 1
 
-Execute(expect ShouldAutoSave should work with auto_open set):
+Execute(expect ticket#auto#ShouldAutoSave should work with auto_open set):
   let g:auto_ticket_save = 1
   AssertEqual
-    \ ShouldAutoSave(),
+    \ ticket#auto#ShouldAutoSave(),
     \ 1
 
-Execute(expect ShouldAutoSave should work with auto_git_only set):
+Execute(expect ticket#auto#ShouldAutoSave should work with auto_git_only set):
   let g:auto_ticket_save = 1
   let g:auto_ticket_git_only = 1
   AssertEqual
-    \ ShouldAutoSave(),
+    \ ticket#auto#ShouldAutoSave(),
     \ 1
 
-Execute(expect ShouldAutoSave should not work in current branch if black listed):
+Execute(expect ticket#auto#ShouldAutoSave should not work in current branch if black listed):
   let g:auto_ticket_save = 1
   let branchname = system(
     \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
     \ )
   let g:ticket_black_list = [branchname]
   AssertEqual
-    \ ShouldAutoSave(),
+    \ ticket#auto#ShouldAutoSave(),
     \ 0
 
-Execute(expect ShouldAutoSave should work if outside black listed branhces):
+Execute(expect ticket#auto#ShouldAutoSave should work if outside black listed branhces):
   let g:auto_ticket_save = 1
   let g:ticket_black_list = ['something']
   AssertEqual
-    \ ShouldAutoSave(),
+    \ ticket#auto#ShouldAutoSave(),
     \ 1
 
-Execute(expect ShouldAutoSave should not work with auto_git_only set when in root dir):
+Execute(expect ticket#auto#ShouldAutoSave should not work with auto_git_only set when in root dir):
   :cd /
   let g:auto_ticket_save = 1
   let g:auto_ticket_git_only = 1
   AssertEqual
-    \ ShouldAutoSave(),
+    \ ticket#auto#ShouldAutoSave(),
     \ 0
 Then(go back to original dir):
   :cd - 
 
-Execute(expect ShouldAutoOpen should work with auto_ticket set):
+Execute(expect ticket#auto#ShouldAutoOpen should work with auto_ticket set):
   let g:auto_ticket = 1
   AssertEqual
-    \ ShouldAutoOpen(),
+    \ ticket#auto#ShouldAutoOpen(),
     \ 1
 
-Execute(expect ShouldAutoOpen should work with auto_open set):
+Execute(expect ticket#auto#ShouldAutoOpen should work with auto_open set):
   let g:auto_ticket_open = 1
   AssertEqual
-    \ ShouldAutoOpen(),
+    \ ticket#auto#ShouldAutoOpen(),
     \ 1
 
-Execute(expect ShouldAutoOpen should work with auto_git_only set):
+Execute(expect ticket#auto#ShouldAutoOpen should work with auto_git_only set):
   let g:auto_ticket_open = 1
   let g:auto_ticket_git_only = 1
   AssertEqual
-    \ ShouldAutoOpen(),
+    \ ticket#auto#ShouldAutoOpen(),
     \ 1
 
-Execute(expect ShouldAutoOpen should not work in current branch if black listed):
+Execute(expect ticket#auto#ShouldAutoOpen should not work in current branch if black listed):
   let g:auto_ticket_open = 1
   let branchname = system(
     \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
     \ )
   let g:ticket_black_list = [branchname]
   AssertEqual
-    \ ShouldAutoOpen(),
+    \ ticket#auto#ShouldAutoOpen(),
     \ 0
 
-Execute(expect ShouldAutoOpen should work if outside black listed branhces):
+Execute(expect ticket#auto#ShouldAutoOpen should work if outside black listed branhces):
   let g:auto_ticket_open = 1
   let g:ticket_black_list = ['something']
   AssertEqual
-    \ ShouldAutoOpen(),
+    \ ticket#auto#ShouldAutoOpen(),
     \ 1
 
-Execute(expect ShouldAutoOpen should not work with auto_git_only set when in root dir):
+Execute(expect ticket#auto#ShouldAutoOpen should not work with auto_git_only set when in root dir):
   :cd /
   let g:auto_ticket_open = 1
   let g:auto_ticket_git_only = 1
   AssertEqual
-    \ ShouldAutoOpen(),
+    \ ticket#auto#ShouldAutoOpen(),
     \ 0
 Then(go back to original dir):
   :cd - 
