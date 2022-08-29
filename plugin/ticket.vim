@@ -69,7 +69,4 @@ command! ForceCleanupSessions :call ticket#deletion#DeleteOldSessions(1)
 command! SaveNote :call ticket#notes#CreateNote()
 command! OpenNote :call ticket#notes#OpenNote()
 command! -nargs=1 GrepNotes :call ticket#notes#GrepNotes(<f-args>)
-command! -bang -nargs=* GrepTicketNotesFzf :call ticket#notes#GrepNotes
-  \ call fzf#vim#grep(
-  \   'rg --type md --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview({'dir': g:session_directory}), <bang>0)
+command! -bang -nargs=* GrepTicketNotesFzf :call ticket#notes#GrepNotesFzf(<q-args>)

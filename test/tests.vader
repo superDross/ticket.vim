@@ -286,3 +286,16 @@ Execute(expect ticket#auto#ShouldAutoOpen should not work with auto_git_only set
     \ 0
 Then(go back to original dir):
   :cd - 
+
+Execute(expect ticket#notes#GrepNotesFzf to error when fzf not loaded):
+  let g:loaded_fzf_vim = 0
+  AssertThrows
+  \  ticket#notes#GrepNotesFzf('test')
+
+Execute(expect ticket#notes#GrepNotesFzf to error when fzf not installed):
+  if exists('g:loaded_fzf_vim')
+    unlet g:loaded_fzf_vim
+  endif
+  let g:loaded_fzf_vim = 0
+  AssertThrows
+  \  ticket#notes#GrepNotesFzf('test')
