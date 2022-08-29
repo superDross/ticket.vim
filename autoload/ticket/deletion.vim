@@ -3,7 +3,7 @@
 " Module dealing with deletion of session files
 
 
-function DeleteFiles(files)
+function ticket#deletion#DeleteFiles(files)
   " delete all files in a given list
   for file in a:files
     call system('rm ' . file)
@@ -11,14 +11,14 @@ function DeleteFiles(files)
 endfunction
 
 
-function DeleteOldSessions(force_input)
+function ticket#deletion#DeleteOldSessions(force_input)
   " removes sessions files that no longer have local branches
   " only works within directories that are git repositories
-  if CheckIfGitRepo() == 0
+  if ticket#git#CheckIfGitRepo() == 0
       throw 'Sessions can only be deleted within a git repository.'
   endif
 	
-  let deletelist = GetSessionsWithoutBranches()
+  let deletelist = ticket#files#GetSessionsWithoutBranches()
 
   if deletelist ==# []
     echo "No sessions found to remove"
@@ -30,7 +30,7 @@ function DeleteOldSessions(force_input)
   let answer = a:force_input == 1 ? "y" : input(question)
 
   if answer ==# 'y'
-    call DeleteFiles(deletelist)
+    call ticket#deletion#DeleteFiles(deletelist)
   endif
 
 endfunction

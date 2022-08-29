@@ -3,11 +3,13 @@
 " Functions associated with automatically open and saving sessions
 
 
-function! _ShouldAuto(action)
+function! ticket#auto#ShouldAuto(action)
   " determine whether we should automatically open or save a session
   let action_dict = {'open': g:auto_ticket_open, 'save': g:auto_ticket_save}
   if g:auto_ticket || action_dict[a:action]
-    if BranchInBlackList() || IfBufferGitOperation() || !CanUseAutoInThisDir()
+    if ticket#blacklist#BranchInBlackList() || 
+    \  ticket#git#IfBufferGitOperation() ||
+    \  !ticket#auto#CanUseAutoInThisDir()
       return 0
     endif
   return 1
@@ -15,32 +17,33 @@ function! _ShouldAuto(action)
 endfunction
 
 
-function! ShouldAutoOpen()
+function! ticket#auto#ShouldAutoOpen()
   " determine if we should automically open a session
-  return _ShouldAuto('open')
+  return ticket#auto#ShouldAuto('open')
 endfunction
 
 
-function! ShouldAutoSave()
+function! ticket#auto#ShouldAutoSave()
   " determine if we should automically save a session
-  return _ShouldAuto('save')
+  return ticket#auto#ShouldAuto('save')
 endfunction
 
 
-function! AutoOpenSession()
+function! ticket#auto#AutoOpenSession()
   " opens session only if no files arguments have been parsed to vim at the
   " command line then force redraw to remove any visual artifacts.
   if argc() ==# 0
-    call OpenSession()
+    call ticket#sessions#OpenSession()
     redraw!
   endif
 endfunction
 
 
-function! CanUseAutoInThisDir()
+function! ticket#auto#CanUseAutoInThisDir()
   " determine if auto open/save functionality should open only in the current
   " directory if it is a git repo
-  if g:auto_ticket_git_only && CheckIfGitRepo()  || !g:auto_ticket_git_only
+  let is_git_repo = ticket#git#CheckIfGitRepo()
+  if g:auto_ticket_git_only && is_git_repo || !g:auto_ticket_git_only
     return 1
   endif
   return 0
