@@ -14,6 +14,7 @@ endfunction
 function ticket#deletion#DeleteOldSessions(force_input)
   " removes sessions files that no longer have local branches
   " only works within directories that are git repositories
+  " force_input: either 0 or 1, 1 means not prompting user before deleting
   if ticket#git#CheckIfGitRepo() == 0
       throw 'Sessions can only be deleted within a git repository.'
   endif
@@ -25,9 +26,12 @@ function ticket#deletion#DeleteOldSessions(force_input)
     return
   endif
 
-  echo join(deletelist, "\r")
-  let question = 'Are you sure you want to delete the above session files? (y/n): '
-  let answer = a:force_input == 1 ? "y" : input(question)
+  if a:force_input
+    let answer = "y"
+  else
+    echo join(deletelist, "\r")
+    let answer = input('Are you sure you want to delete the above session files? (y/n): ')
+  endif
 
   if answer ==# 'y'
     call ticket#deletion#DeleteFiles(deletelist)

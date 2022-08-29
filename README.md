@@ -28,13 +28,15 @@ Saving and opening sessions will work and automatically name the session file `m
 
 - `:CleanupSessions` -- Remove sessions that do not have a local branch (only works within git repositories)
 
+- `:ForceCleanupSessions` -- Same as `CleanupSession` but forcefully removes without prompting user (only works within git repositories)
+
 - `:SaveNote` -- Save notes related to the session
 
 - `:OpenNote` -- Open note associated with the session
 
 - `:GrepNotes *` -- Search all notes for given arg
 
-- `:GrepTicketNotesFzf` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim)
+- `:GrepTicketNotesFzf` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim) & does not work with neovim)
 
 
 ## Settings
