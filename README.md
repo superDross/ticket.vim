@@ -52,19 +52,19 @@ let g:auto_ticket = 1
 To automatically open session files when **only** opening vim set the following in your `.vimrc`:
 
 ```vim
-let g:auto_open = 1
+let g:auto_ticket_open = 1
 ```
 
 To automatically save session files when **only** closing vim set the following in your `.vimrc`:
 
 ```vim
-let g:auto_save = 1
+let g:auto_ticket_save = 1
 ```
 
 To **only** allow the auto feature to work in git repo directories set the following in your `.vimrc`:
 
 ```vim
-let g:auto_git_only = 1
+let g:auto_ticket_git_only = 1
 ```
 
 Black list some branches from being used with the auto feature:
