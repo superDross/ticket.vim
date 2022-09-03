@@ -23,6 +23,7 @@ function! ticket#notes#GrepNotes(query)
   " returns all notes file paths that contain the given query
   let ticketsdir = g:session_directory . '/**/*.md'
   execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
+  copen
 endfunction
 
 

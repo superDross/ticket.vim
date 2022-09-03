@@ -305,7 +305,7 @@ Execute(expect IsInstalled to detect if plugin loaded):
   \  ticket#utils#IsInstalled('auto.vim'),
   \  1
 
-Execute(expect IsInstalled to detect if plugin loaded):
+Execute(expect IsInstalled to detect if plugin is not loaded):
   AssertEqual
   \  ticket#utils#IsInstalled('DOES.NOT.EXIST'),
   \  0
