@@ -299,3 +299,13 @@ Execute(expect ticket#notes#GrepNotesFzf to error when fzf not installed):
   let g:loaded_fzf_vim = 0
   AssertThrows
   \  ticket#notes#GrepNotesFzf('test')
+
+Execute(expect IsInstalled to detect if plugin loaded):
+  AssertEqual
+  \  ticket#utils#IsInstalled('auto.vim'),
+  \  1
+
+Execute(expect IsInstalled to detect if plugin is not loaded):
+  AssertEqual
+  \  ticket#utils#IsInstalled('DOES.NOT.EXIST'),
+  \  0

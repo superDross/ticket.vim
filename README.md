@@ -36,7 +36,7 @@ Saving and opening sessions will work and automatically name the session file `m
 
 - `:GrepNotes *` -- Search all notes for given arg
 
-- `:GrepTicketNotesFzf` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim) & does not work with neovim)
+- `:GrepTicketNotesFzf` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim) for vim and [Fzf-lua](https://github.com/ibhagwan/fzf-lua) for neovim)
 
 
 ## Settings
@@ -89,6 +89,8 @@ let g:session_directory = '~/my_dir'
 ```
 
 ## Installation
+
+Requires vim 8.1+ or neovim 0.5+.
 
 With [Vim-Plug](https://github.com/junegunn/vim-plug):
 
