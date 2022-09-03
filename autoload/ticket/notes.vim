@@ -26,19 +26,38 @@ function! ticket#notes#GrepNotes(query)
 endfunction
 
 
-function! ticket#notes#GrepNotesFzf(args)
-  " interactively search notes contents using junegunn/fzf.vim
-  if has('nvim')
-    echoerr 'GrepTicketNotesFzf only works with vim'
+function! ticket#notes#GrepNotesFzfLua(args = '')
+  " interactiely search notes contents using fzf-lua
+  if ticket#utils#IsInstalled('fzf-lua')
+    lua require('fzf-lua').grep({
+      \ rg_glob=true,
+      \ cwd = vim.g.session_directory,
+      \ search=vim.fn.eval('a:args') .. ' -- *.md',
+      \ no_esc=true
+    \ })
     return
+  else
+    echoerr 'ibhagwan/fzf-lua is not loaded or installed'
   endif
-  " NOTE: this is a little hacky, if they change this var name in fzf repo
-  " this will always echoerr
-  if !get(g:, 'loaded_fzf_vim', 0)
+endfunction
+
+
+function! ticket#notes#GrepNotesFzfVim(args)
+  " interactiely search notes contents using fzf.vim
+  if ticket#utils#IsInstalled('fzf.vim')
+    call fzf#vim#grep(
+    \   'rg --type md --column --line-number --no-heading --color=always --smart-case -- '.shellescape(a:args), 1,
+    \   fzf#vim#with_preview({'dir': g:session_directory}))
+  else
     echoerr 'junegunn/fzf.vim is not loaded or installed'
-    return
   endif
-  call fzf#vim#grep(
-  \   'rg --type md --column --line-number --no-heading --color=always --smart-case -- '.shellescape(a:args), 1,
-  \   fzf#vim#with_preview({'dir': g:session_directory}))
+endfunction
+
+
+function! ticket#notes#GrepNotesFzf(args)
+  " interactively search notes contents using junegunn/fzf.vim or fzf-lua
+  if has('nvim')
+    return ticket#notes#GrepNotesFzfLua(a:args)
+  endif
+  return ticket#notes#GrepNotesFzfVim(a:args)
 endfunction
