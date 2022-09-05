@@ -68,5 +68,11 @@ command! CleanupSessions :call ticket#deletion#DeleteOldSessions(0)
 command! ForceCleanupSessions :call ticket#deletion#DeleteOldSessions(1)
 command! SaveNote :call ticket#notes#CreateNote()
 command! OpenNote :call ticket#notes#OpenNote()
-command! -nargs=1 GrepNotes :call ticket#notes#GrepNotes(<f-args>)
+
+if get(g:, 'ticket_use_fzf_default', 0)
+  command! -bang -nargs=* GrepNotes :call ticket#notes#GrepNotesFzf(<q-args>)
+else
+  command! -nargs=1 GrepNotes :call ticket#notes#GrepNotes(<f-args>)
+endif
+
 command! -bang -nargs=* GrepTicketNotesFzf :call ticket#notes#GrepNotesFzf(<q-args>)

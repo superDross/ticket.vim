@@ -88,6 +88,13 @@ Define the directory you want to store all session files within:
 let g:session_directory = '~/my_dir'
 ```
 
+Use `FZF` instead of vimgrep when executing `:GrepNotes`:
+
+```vim
+let g:ticket_use_fzf_default = 1
+```
+
+
 ## Installation
 
 Requires vim 8.1+ or neovim 0.5+.
