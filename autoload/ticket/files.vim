@@ -73,7 +73,7 @@ function! ticket#files#GetSessionsWithoutBranches()
   for session in ticket#sessions#GetAllSessionNames(repo)
     if index(branches, session) == -1  " if session not in branches
       let sessionpath = system(
-      \  'find ' . g:session_directory . '/' . repo . ' -type f -name ' . '*' . session . '.vim'
+      \  'find ' . g:session_directory . '/' . repo . ' -type f -name ' . session . '.vim'
       \)
       call add(session_list, sessionpath)
     endif
