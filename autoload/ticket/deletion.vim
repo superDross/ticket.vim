@@ -6,7 +6,7 @@
 function ticket#deletion#DeleteFiles(files)
   " delete all files in a given list
   for file in a:files
-    call system('rm ' . file)
+    call delete(file)
   endfor
 endfunction
 
