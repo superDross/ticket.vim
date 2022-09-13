@@ -25,6 +25,6 @@ function! ticket#sessions#GetAllSessionNames(repo)
   return split(system(
   \  'find ' . g:session_directory . '/' . a:repo . ' -type f -name "*.vim" |
   \   xargs -I {} basename {} |
-  \   sed "s/.\{4\}$//"'
+  \   sed ' . '''s/.\{4\}$//'''
   \))
 endfunction
