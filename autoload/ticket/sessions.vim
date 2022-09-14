@@ -22,9 +22,6 @@ endfunction
 function! ticket#sessions#GetAllSessionNames(repo)
   " returns all session names stripped of feature/bugfix prefix & extension
   " for a given repo
-  return split(system(
-  \  'find ' . g:session_directory . '/' . a:repo . ' -type f -name "*.vim" |
-  \   xargs -I {} basename {} |
-  \   sed ' . '''s/.\{4\}$//'''
-  \))
+  let files = globpath(g:session_directory . '/' . a:repo, '*.vim', 0, 1)
+  return map(files, "fnamemodify(v:val, ':t:r')")
 endfunction

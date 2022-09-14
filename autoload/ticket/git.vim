@@ -12,27 +12,30 @@ endfunction
 function! ticket#git#GetRepoName()
   " returns remote name if set, otherwise top directory name is returned
   if system('git config --get remote.origin.url') !=# ''
-    return system('basename -s .git $(git config --get remote.origin.url) | tr -d "\n"')
+    let remote_name = system('git config --get remote.origin.url')
   else
-    return system('basename $(git rev-parse --show-toplevel) | tr -d "\n"')
+    let remote_name = system('git rev-parse --show-toplevel')
   endif
+  let basename = fnamemodify(remote_name, ':t')
+  return substitute(basename, '\n\|.git', '','g')
 endfunction
 
 
 function! ticket#git#GetBranchName()
-  " returns the branch name checked out in the current working directory
-  return system('git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"')
+  " returns the branch name checked out in the current working directory.
+  " removes newlines or leading branch prefixes (e.g. feature/, bugfix/ etc.)
+  let full_branch_name = system('git symbolic-ref --short HEAD')
+  return substitute(full_branch_name, '.*/\|\n', '', 'g')
 endfunction
 
 
 function! ticket#git#GetAllBranchNames()
   " returns a list of all branch names (stripped of feature/bugfix prefix)
   " associated within the current repo
-  return split(
-  \ system(
-  \    "git for-each-ref --format='%(refname:short)' refs/heads | sed 's@.*/@@'"
-  \ )
+  let branchnames = split(
+  \  system("git for-each-ref --format='%(refname:short)' refs/heads")
   \)
+  return map(branchnames, "substitute(v:val, '.*/', '', '')")
 endfunction
 
 

@@ -1,6 +1,5 @@
 Before:
   call system('touch ~/test.file')
-  call system('touch ~/.tickets/ticket.vim/old-session.vim')
   call system('mkdir -p /tmp/temp')
   call system('mkdir -p /tmp/temp2')
 
@@ -11,7 +10,7 @@ After:
   let g:auto_ticket_git_only = 0
   let g:ticket_black_list = []
   let g:default_session_name = 'main'
-  let g:session_directory = '~/.tickets'
+  let g:session_directory = expand('~') . '/.tickets'
   let $XDG_DATA_HOME = ''
   call system('rm ~/test.file ~/.tickets/ticket.vim/*')
 
@@ -71,31 +70,31 @@ Execute(expect ticket#git#GetRepoName pass):
 Execute(expect GitDirPath pass):
   AssertEqual
     \ ticket#files#GetSessionDirPath(),
-    \ '~/.tickets/ticket.vim'
+    \ expand('~') . '/.tickets/ticket.vim'
 
 Execute(expect GitDirPath fail):
   :cd /tmp/temp
   AssertEqual
     \ ticket#files#GetSessionDirPath(),
-    \ '~/.tickets/temp'
+    \ expand('~') . '/.tickets/temp'
 Then(go back to original dir):
   :cd -
 
 Execute(expect ticket#files#GetSessionFilePath session pass):
   AssertEqual
     \ ticket#files#GetSessionFilePath('.vim'),
-    \ '~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
+    \ expand('~') . '/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
 
 Execute(expect ticket#files#GetSessionFilePath markdown pass):
   AssertEqual
     \ ticket#files#GetSessionFilePath('.md'),
-    \ '~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.md'
+    \ expand('~') . '/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.md'
 
 Execute(expect ticket#files#GetSessionFilePathOnlyIfExists pass):
   call ticket#sessions#CreateSession()
   AssertEqual
     \ ticket#files#GetSessionFilePathOnlyIfExists('.vim'),
-    \ '~/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
+    \ expand('~') . '/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
 
 Execute(expect ticket#files#GetSessionFilePathOnlyIfExists fail):
   AssertThrows
@@ -135,7 +134,7 @@ Execute(expect ticket#files#GetSessionFilePathOnlyIfExists pass when in non git 
   call ticket#sessions#CreateSession()
   AssertEqual
     \ ticket#files#GetSessionFilePathOnlyIfExists('.vim'),
-    \ '~/.tickets/temp/main.vim'
+    \ expand('~') . '/.tickets/temp/main.vim'
 Then(go back to original dir):
   :cd -
 
@@ -161,12 +160,20 @@ Execute(expect ticket#blacklist#BranchInBlackList fail):
     \ 0
 
 Execute(expect ticket#sessions#GetAllSessionNames to show all sessions):
+  call system('touch ~/.tickets/ticket.vim/old-session.vim')
   AssertEqual
     \ ticket#sessions#GetAllSessionNames('ticket.vim'),
     \ ['old-session']
 
-Execute(expect ticket#deletion#DeleteOldSessions remove old-session.vim):
+Execute(SetUp delete old sessions test):
+  " NOTE: there is a bug that results in a delay when executing delete()
+  " and any other operations in the same test. So we are calling the
+  " DeleteOldSessions here and evalauating the results in the next test
+  " as a means of circumventing said issue.
+  call system('touch ~/.tickets/ticket.vim/old-session.vim')
   call ticket#deletion#DeleteOldSessions(1)
+
+Execute(expect ticket#deletion#DeleteOldSessions remove old-session.vim):
   AssertEqual
     \ ticket#sessions#GetAllSessionNames('ticket.vim'),
     \ []

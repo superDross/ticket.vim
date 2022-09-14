@@ -22,4 +22,4 @@ jobs:
           set rtp+=after
           filetype plugin indent on
           syntax enable
-          VIMRC) -c 'Vader! test/*' > /dev/null
+          VIMRC) -c 'Vader! test/ci-tests.vader' > /dev/null

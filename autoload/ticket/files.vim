@@ -12,7 +12,7 @@ function! ticket#files#GetRootTicketDir(legacy_dir)
   elseif isdirectory(expand(a:legacy_dir))
     return expand(a:legacy_dir)
   else
-    call system('mkdir -p ~/.local/share')
+    call mkdir(expand('~/.local/share'), 'p')
     return expand('~/.local/share/tickets-vim')
   endif
 endfunction
@@ -37,9 +37,9 @@ function! ticket#files#GetSessionDirPath()
   " uses the git branch name in the current working dir or the dirname
   " as the basename for the directory.
   let is_git_repo = ticket#git#CheckIfGitRepo()
-  let name = is_git_repo == 1 ? ticket#git#GetRepoName() : system('basename $(pwd) | tr -d "\n"')
-  let dirpath = g:session_directory . '/' . name
-  call system('mkdir -p ' . dirpath)
+  let name = is_git_repo == 1 ? ticket#git#GetRepoName() : fnamemodify(getcwd(), ':t')
+  let dirpath = expand(g:session_directory . '/' . name)
+  call mkdir(dirpath, 'p')
   return dirpath
 endfunction
 
@@ -72,9 +72,7 @@ function! ticket#files#GetSessionsWithoutBranches()
   let session_list = []
   for session in ticket#sessions#GetAllSessionNames(repo)
     if index(branches, session) == -1  " if session not in branches
-      let sessionpath = system(
-      \  'find ' . g:session_directory . '/' . repo . ' -type f -name ' . session . '.vim'
-      \)
+      let sessionpath = findfile(session . '.vim', g:session_directory . '/' . repo)
       call add(session_list, sessionpath)
     endif
   endfor
