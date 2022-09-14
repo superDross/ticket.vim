@@ -103,6 +103,8 @@ With [Vim-Plug](https://github.com/junegunn/vim-plug):
 
 ```vim
 Plug 'superDross/ticket.vim'
+" alternatively pin to specific version (useful if experiencing bugs with a new release)
+Plug 'superDross/ticket.vim', { 'tag': '0.10.1' }
 ```
 
 With [Packer.nvim](https://github.com/wbthomason/packer.nvim):
@@ -110,6 +112,11 @@ With [Packer.nvim](https://github.com/wbthomason/packer.nvim):
 ```lua
 require('packer').startup(function(use)
   use 'superDross/ticket.vim'
+  -- alternatively pin to specific version (useful if experiencing bugs with a new release)
+  use {
+      'superDross/ticket.vim',
+      tag = '0.10.1',
+  }
 end)
 ```
 
@@ -136,3 +143,11 @@ This will check and prioritise the directory set in `$XDG_DATA_HOME`, if not set
 - Only works within \*NIX based systems.
 
 - This plugin assumes it has the appropriate permissions for modifying files locally
+
+## Developing
+
+When creating fixes/features you can test that your changes do not break any existing features by executing the following make command in the root directory of the project:
+
+```sh
+make tests
+```
