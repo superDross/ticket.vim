@@ -22,6 +22,8 @@ Saving and opening sessions will work and automatically name the session file `m
 
 ## Commands
 
+### Sessions
+
 - `:SaveSession` -- To create a session 
 
 - `:OpenSession` -- Open a session
@@ -31,6 +33,8 @@ Saving and opening sessions will work and automatically name the session file `m
 - `:CleanupSessions` -- Remove sessions that do not have a local branch (only works within git repositories)
 
 - `:ForceCleanupSessions` -- Same as `CleanupSession` but forcefully removes without prompting user (only works within git repositories)
+
+### Notes
 
 - `:SaveNote` -- Save notes related to the session
 
@@ -74,7 +78,6 @@ let g:auto_ticket_git_only = 1
 Black list some branches from being used with the auto feature:
 
 ```vim
-let g:auto_ticket = 1
 let g:ticket_black_list = ['master', 'other-branch']
 ```
 
