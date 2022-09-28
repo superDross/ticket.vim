@@ -64,10 +64,12 @@ augroup END
 
 command! SaveSession :call ticket#sessions#CreateSession()
 command! OpenSession :call ticket#sessions#OpenSession()
+command! DeleteSession :call ticket#deletion#DeleteSession()
 command! CleanupSessions :call ticket#deletion#DeleteOldSessions(0)
 command! ForceCleanupSessions :call ticket#deletion#DeleteOldSessions(1)
 command! SaveNote :call ticket#notes#CreateNote()
 command! OpenNote :call ticket#notes#OpenNote()
+command! DeleteNote :call ticket#deletion#DeleteNote()
 
 if get(g:, 'ticket_use_fzf_default', 0)
   command! -bang -nargs=* GrepNotes :call ticket#notes#GrepNotesFzf(<q-args>)

@@ -5,9 +5,42 @@
 
 function ticket#deletion#DeleteFiles(files)
   " delete all files in a given list
+  " files: list of files to delete
   for file in a:files
     call delete(file)
   endfor
+endfunction
+
+
+function ticket#deletion#DeleteSession()
+  " delete the session associated with the current git repo or directory
+  return ticket#deletion#DeleteCurrentAssociatedFile('vim', 0)
+endfunction
+
+
+function ticket#deletion#DeleteNote()
+  " delete the note associated with the current git repo or directory
+  return ticket#deletion#DeleteCurrentAssociatedFile('md', 0)
+endfunction
+
+
+function ticket#deletion#DeleteCurrentAssociatedFile(ext, force_input)
+  " delete the session/note associated with the current git repo or directory
+  " ext: either 'vim' or 'md' to denote the file extension
+  " force_input: either 0 or 1, 1 means not prompting user before deleting
+  let file = ticket#files#GetSessionFilePathOnlyIfExists(a:ext)
+
+  if a:force_input
+    let answer = "y"
+  else
+    let answer = input(
+      \ 'Are you sure you want to delete ' . fnamemodify(file, ':t') . '? (y/n): '
+    \)
+  endif
+
+  if tolower(answer) ==# 'y'
+    call delete(file)
+  endif
 endfunction
 
 
@@ -33,7 +66,7 @@ function ticket#deletion#DeleteOldSessions(force_input)
     let answer = input('Are you sure you want to delete the above session files? (y/n): ')
   endif
 
-  if answer ==# 'y'
+  if tolower(answer) ==# 'y'
     call ticket#deletion#DeleteFiles(deletelist)
   endif
 
