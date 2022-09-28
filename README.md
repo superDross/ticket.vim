@@ -26,6 +26,8 @@ Saving and opening sessions will work and automatically name the session file `m
 
 - `:OpenSession` -- Open a session
 
+- `:DeleteSession` -- Delete the session associated with the current git repo or directory
+
 - `:CleanupSessions` -- Remove sessions that do not have a local branch (only works within git repositories)
 
 - `:ForceCleanupSessions` -- Same as `CleanupSession` but forcefully removes without prompting user (only works within git repositories)
@@ -33,6 +35,8 @@ Saving and opening sessions will work and automatically name the session file `m
 - `:SaveNote` -- Save notes related to the session
 
 - `:OpenNote` -- Open note associated with the session
+
+- `:DeleteNote` -- Delete the note associated with the current git repo or directory
 
 - `:GrepNotes *` -- Search all notes for given arg
 

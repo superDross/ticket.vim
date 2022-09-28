@@ -85,6 +85,11 @@ Execute(expect ticket#files#GetSessionFilePath session pass):
     \ ticket#files#GetSessionFilePath('.vim'),
     \ expand('~') . '/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
 
+Execute(expect ticket#files#GetSessionFilePath session pass without leading dot):
+  AssertEqual
+    \ ticket#files#GetSessionFilePath('vim'),
+    \ expand('~') . '/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
+
 Execute(expect ticket#files#GetSessionFilePath markdown pass):
   AssertEqual
     \ ticket#files#GetSessionFilePath('.md'),
@@ -315,4 +320,20 @@ Execute(expect IsInstalled to detect if plugin loaded):
 Execute(expect IsInstalled to detect if plugin is not loaded):
   AssertEqual
   \  ticket#utils#IsInstalled('DOES.NOT.EXIST'),
+  \  0
+
+Execute(expect to delete current session file with DeleteCurrentAssocaitedFile):
+  call ticket#sessions#CreateSession()
+  call ticket#deletion#DeleteCurrentAssociatedFile('vim', 1)
+  let file = expand('~') . '/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.vim'
+  AssertEqual
+  \  filereadable(file),
+  \  0
+
+Execute(expect to delete current note file with DeleteCurrentAssocaitedFile):
+  call ticket#notes#CreateNote()
+  call ticket#deletion#DeleteCurrentAssociatedFile('md', 1)
+  let file = expand('~') . '/.tickets/ticket.vim/' . ticket#git#GetBranchName() . '.md'
+  AssertEqual
+  \  filereadable(file),
   \  0

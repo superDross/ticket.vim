@@ -51,7 +51,8 @@ function! ticket#files#GetSessionFilePath(extension)
   let is_git_repo = ticket#git#CheckIfGitRepo() 
   let branchname = is_git_repo == 1 ? ticket#git#GetBranchName() : g:default_session_name
   let dirpath = ticket#files#GetSessionDirPath()
-  return dirpath . '/' . branchname . a:extension
+  let ext = a:extension[0] == '.' ? a:extension : '.' .. a:extension
+  return dirpath . '/' . branchname . ext
 endfunction
 
 
