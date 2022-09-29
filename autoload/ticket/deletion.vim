@@ -30,13 +30,8 @@ function ticket#deletion#DeleteCurrentAssociatedFile(ext, force_input)
   " force_input: either 0 or 1, 1 means not prompting user before deleting
   let file = ticket#files#GetSessionFilePathOnlyIfExists(a:ext)
 
-  if a:force_input
-    let answer = "y"
-  else
-    let answer = input(
-      \ 'Are you sure you want to delete ' . fnamemodify(file, ':t') . '? (y/n): '
-    \)
-  endif
+  let q = 'Are you sure you want to delete ' . fnamemodify(file, ':t') . '? (y/n): '
+  let answer = a:force_input == 1 ? 'y' : input(q)
 
   if tolower(answer) ==# 'y'
     call delete(file)
@@ -59,12 +54,9 @@ function ticket#deletion#DeleteOldSessions(force_input)
     return
   endif
 
-  if a:force_input
-    let answer = "y"
-  else
-    echo join(deletelist, "\r")
-    let answer = input('Are you sure you want to delete the above session files? (y/n): ')
-  endif
+  let q = join(deletelist, "\n") . "\n\n" .
+    \ 'Are you sure you want to delete the above session files? (y/n): '
+  let answer = a:force_input == 1 ? 'y' : input(q)
 
   if tolower(answer) ==# 'y'
     call ticket#deletion#DeleteFiles(deletelist)
