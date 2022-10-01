@@ -3,7 +3,7 @@
 " High level functions for creating, opening and getting sessions
 
 
-function! ticket#sessions#CreateSession()
+function! ticket#sessions#CreateSession() abort
   " creates or overwrites the session file associated with the git branch or
   " directory name in the working directory
   let sessionfile = ticket#files#GetSessionFilePath('.vim')
@@ -11,7 +11,7 @@ function! ticket#sessions#CreateSession()
 endfunction
 
 
-function! ticket#sessions#OpenSession()
+function! ticket#sessions#OpenSession() abort
   " opens the session file associated with the git branch or directory name in
   " the working directory
   let sessionfile = ticket#files#GetSessionFilePathOnlyIfExists('.vim')
@@ -19,7 +19,7 @@ function! ticket#sessions#OpenSession()
 endfunction
 
 
-function! ticket#sessions#GetAllSessionNames(repo)
+function! ticket#sessions#GetAllSessionNames(repo) abort
   " returns all session names stripped of feature/bugfix prefix & extension
   " for a given repo
   let files = globpath(g:session_directory . '/' . a:repo, '*.vim', 0, 1)

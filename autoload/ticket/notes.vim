@@ -3,7 +3,7 @@
 " High level functions for creating, opening and getting notes
 
 
-function! ticket#notes#CreateNote()
+function! ticket#notes#CreateNote() abort
   " creates or overwrites the note file associated with the git branch or
   " directory name in the working directory
   let mdfile = ticket#files#GetSessionFilePath('.md')
@@ -11,7 +11,7 @@ function! ticket#notes#CreateNote()
 endfunction
 
 
-function! ticket#notes#OpenNote()
+function! ticket#notes#OpenNote() abort
   " opens the note file associated with the git branch or directory name in
   " the working directory
   let mdfile = ticket#files#GetSessionFilePath('.md')
@@ -19,7 +19,7 @@ function! ticket#notes#OpenNote()
 endfunction
 
 
-function! ticket#notes#GrepNotes(query)
+function! ticket#notes#GrepNotes(query) abort
   " returns all notes file paths that contain the given query
   let ticketsdir = g:session_directory . '/**/*.md'
   execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
@@ -27,7 +27,7 @@ function! ticket#notes#GrepNotes(query)
 endfunction
 
 
-function! ticket#notes#GrepNotesFzfLua(args = '')
+function! ticket#notes#GrepNotesFzfLua(args = '') abort
   " interactiely search notes contents using fzf-lua
   if ticket#utils#IsInstalled('fzf-lua')
     lua require('fzf-lua').grep({
@@ -43,7 +43,7 @@ function! ticket#notes#GrepNotesFzfLua(args = '')
 endfunction
 
 
-function! ticket#notes#GrepNotesFzfVim(args)
+function! ticket#notes#GrepNotesFzfVim(args) abort
   " interactiely search notes contents using fzf.vim
   if ticket#utils#IsInstalled('fzf.vim')
     call fzf#vim#grep(
@@ -55,7 +55,7 @@ function! ticket#notes#GrepNotesFzfVim(args)
 endfunction
 
 
-function! ticket#notes#GrepNotesFzf(args)
+function! ticket#notes#GrepNotesFzf(args) abort
   " interactively search notes contents using junegunn/fzf.vim or fzf-lua
   if has('nvim')
     return ticket#notes#GrepNotesFzfLua(a:args)

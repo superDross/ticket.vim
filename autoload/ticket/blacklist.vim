@@ -3,7 +3,7 @@
 " Functions associated with the black list feature
 
 
-function! ticket#blacklist#BranchInBlackList()
+function! ticket#blacklist#BranchInBlackList() abort
   " determines if the branch name in the working directory is within the user
   " defined black list
   let branchname = ticket#git#GetBranchName()
@@ -12,5 +12,3 @@ function! ticket#blacklist#BranchInBlackList()
   endif
   return 0
 endfunction
-
-

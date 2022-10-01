@@ -3,7 +3,7 @@
 " Functions associated with automatically open and saving sessions
 
 
-function! ticket#auto#ShouldAuto(action)
+function! ticket#auto#ShouldAuto(action) abort
   " determine whether we should automatically open or save a session
   let action_dict = {'open': g:auto_ticket_open, 'save': g:auto_ticket_save}
   if g:auto_ticket || action_dict[a:action]
@@ -17,19 +17,19 @@ function! ticket#auto#ShouldAuto(action)
 endfunction
 
 
-function! ticket#auto#ShouldAutoOpen()
+function! ticket#auto#ShouldAutoOpen() abort
   " determine if we should automically open a session
   return ticket#auto#ShouldAuto('open')
 endfunction
 
 
-function! ticket#auto#ShouldAutoSave()
+function! ticket#auto#ShouldAutoSave() abort
   " determine if we should automically save a session
   return ticket#auto#ShouldAuto('save')
 endfunction
 
 
-function! ticket#auto#AutoOpenSession()
+function! ticket#auto#AutoOpenSession() abort
   " opens session only if no files arguments have been parsed to vim at the
   " command line then force redraw to remove any visual artifacts.
   if argc() ==# 0
@@ -39,7 +39,7 @@ function! ticket#auto#AutoOpenSession()
 endfunction
 
 
-function! ticket#auto#CanUseAutoInThisDir()
+function! ticket#auto#CanUseAutoInThisDir() abort
   " determine if auto open/save functionality should open only in the current
   " directory if it is a git repo
   let is_git_repo = ticket#git#CheckIfGitRepo()

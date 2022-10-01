@@ -3,7 +3,7 @@
 " Module dealing with deletion of session files
 
 
-function ticket#deletion#DeleteFiles(files)
+function! ticket#deletion#DeleteFiles(files) abort
   " delete all files in a given list
   " files: list of files to delete
   for file in a:files
@@ -12,19 +12,19 @@ function ticket#deletion#DeleteFiles(files)
 endfunction
 
 
-function ticket#deletion#DeleteSession()
+function! ticket#deletion#DeleteSession() abort
   " delete the session associated with the current git repo or directory
   return ticket#deletion#DeleteCurrentAssociatedFile('vim', 0)
 endfunction
 
 
-function ticket#deletion#DeleteNote()
+function! ticket#deletion#DeleteNote() abort
   " delete the note associated with the current git repo or directory
   return ticket#deletion#DeleteCurrentAssociatedFile('md', 0)
 endfunction
 
 
-function ticket#deletion#DeleteCurrentAssociatedFile(ext, force_input)
+function! ticket#deletion#DeleteCurrentAssociatedFile(ext, force_input) abort
   " delete the session/note associated with the current git repo or directory
   " ext: either 'vim' or 'md' to denote the file extension
   " force_input: either 0 or 1, 1 means not prompting user before deleting
@@ -39,7 +39,7 @@ function ticket#deletion#DeleteCurrentAssociatedFile(ext, force_input)
 endfunction
 
 
-function ticket#deletion#DeleteOldSessions(force_input)
+function! ticket#deletion#DeleteOldSessions(force_input) abort
   " removes sessions files that no longer have local branches
   " only works within directories that are git repositories
   " force_input: either 0 or 1, 1 means not prompting user before deleting
@@ -50,7 +50,7 @@ function ticket#deletion#DeleteOldSessions(force_input)
   let deletelist = ticket#files#GetSessionsWithoutBranches()
 
   if deletelist ==# []
-    echo "No sessions found to remove"
+    echo 'No sessions found to remove'
     return
   endif
 

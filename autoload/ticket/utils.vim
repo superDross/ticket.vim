@@ -3,7 +3,7 @@
 " Various utility functions used throughout the project
 
 
-function! ticket#utils#IsInstalled(package)
+function! ticket#utils#IsInstalled(package) abort
   " check if the given package is installed or not
   let loaded_packages = filter(
     \ split(execute(':scriptname'), "\n"),
