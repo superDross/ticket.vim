@@ -7,7 +7,8 @@ function! ticket#sessions#CreateSession() abort
   " creates or overwrites the session file associated with the git branch or
   " directory name in the working directory
   let sessionfile = ticket#files#GetSessionFilePath('.vim')
-  execute 'mksession! ' . sessionfile
+  execute 'silent mksession! ' . sessionfile
+  call ticket#utils#VeryVerbosePrint('Session Saved: ' . sessionfile)
 endfunction
 
 
@@ -15,7 +16,8 @@ function! ticket#sessions#OpenSession() abort
   " opens the session file associated with the git branch or directory name in
   " the working directory
   let sessionfile = ticket#files#GetSessionFilePathOnlyIfExists('.vim')
-  execute 'source ' . sessionfile
+  execute 'silent source ' . sessionfile
+  call ticket#utils#VeryVerbosePrint('Session Opened: ' . sessionfile)
 endfunction
 
 

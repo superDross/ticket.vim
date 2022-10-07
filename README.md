@@ -101,6 +101,12 @@ Use `FZF` instead of vimgrep when executing `:GrepNotes`:
 let g:ticket_use_fzf_default = 1
 ```
 
+Print save/open messages when saving/opening sessions/notes:
+
+```vim
+let g:ticket_very_verbose = 1
+```
+
 
 ## Installation
 

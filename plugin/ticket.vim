@@ -39,6 +39,11 @@ if !exists('g:default_session_name')
 endif
 
 
+if !exists('g:ticket_very_verbose')
+  let g:ticket_very_verbose = 0
+endif
+
+
 if !exists('g:session_directory')
   " ~/.tickets should be hard coded within the function, it is not simply for
   " testing purposes
