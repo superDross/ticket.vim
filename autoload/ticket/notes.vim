@@ -7,7 +7,8 @@ function! ticket#notes#CreateNote() abort
   " creates or overwrites the note file associated with the git branch or
   " directory name in the working directory
   let mdfile = ticket#files#GetSessionFilePath('.md')
-  execute 'w ' . mdfile
+  execute 'silent write! ' . mdfile
+  call ticket#utils#VeryVerbosePrint('Note Saved: ' . mdfile)
 endfunction
 
 
@@ -15,7 +16,8 @@ function! ticket#notes#OpenNote() abort
   " opens the note file associated with the git branch or directory name in
   " the working directory
   let mdfile = ticket#files#GetSessionFilePath('.md')
-  execute 'e ' . mdfile
+  execute 'silent edit ' . mdfile
+  call ticket#utils#VeryVerbosePrint('Note Opened: ' . mdfile)
 endfunction
 
 
