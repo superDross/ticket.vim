@@ -2,9 +2,6 @@
 
 Vim session management system with a focus on git branches.
 
-![session-save-auto](https://user-images.githubusercontent.com/16519378/195995769-e3323079-c5f3-415e-9ed5-a582a9174625.gif)
-
-
 ## Usage
 
 ### Within a Git Repo
