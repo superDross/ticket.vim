@@ -36,7 +36,7 @@ Saving and opening sessions will work and automatically name the session file `m
 
 - `:FindSessions *` -- Search all session files name for a given arg and open the quickfix menu
 
-- `:SessionsFzf` -- Use fzf to search and open sessions (requires [fzf.vim](https://github.com/junegunn/fzf.vim) or [fzf-lua](https://github.com/ibhagwan/fzf-lua))
+- `:TicketSessionsFzf` -- Use fzf to search and open sessions (requires [fzf.vim](https://github.com/junegunn/fzf.vim) or [fzf-lua](https://github.com/ibhagwan/fzf-lua))
 
 
 ### Notes
