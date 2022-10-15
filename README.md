@@ -2,7 +2,8 @@
 
 Vim session management system with a focus on git branches.
 
-![](https://user-images.githubusercontent.com/16519378/185827909-3c80e95f-668b-4d6f-b113-86d9d805eef6.gif)
+![session-save-auto](https://user-images.githubusercontent.com/16519378/195995769-e3323079-c5f3-415e-9ed5-a582a9174625.gif)
+
 
 ## Usage
 
@@ -14,7 +15,22 @@ Executing `OpenSession` will open the session you saved that is associated with 
 
 If you switch branch you can save/open a different session associated with the branch you just switched to without affecting other branch sessions.
 
+Automatic saving and opening branch specific session files is possible:
+
+![session-save-auto](https://user-images.githubusercontent.com/16519378/195995769-e3323079-c5f3-415e-9ed5-a582a9174625.gif)
+
+Searching and sourcing session files is possible with FZF integration:
+
+![fzf-session](https://user-images.githubusercontent.com/16519378/195995818-597233ee-b32e-4063-8a42-86d23fc86b79.gif)
+
 Markdown files for taking notes associated with the branch can be managed using `:SaveNote` and `:OpenNote`
+
+![note-save-open](https://user-images.githubusercontent.com/16519378/195995824-bcfc1a5d-51ff-46a0-8976-27ef07bb1fd1.gif)
+
+Searching note file contents and opening them is possible with FZF integration:
+
+![fzf-notes](https://user-images.githubusercontent.com/16519378/195995834-b8101bf5-4929-4cdc-8cc1-5faf557e5712.gif)
+
 
 ### Outside a Git Repo
 
