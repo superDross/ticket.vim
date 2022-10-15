@@ -34,6 +34,11 @@ Saving and opening sessions will work and automatically name the session file `m
 
 - `:ForceCleanupSessions` -- Same as `CleanupSession` but forcefully removes without prompting user (only works within git repositories)
 
+- `:FindSessions *` -- Search all session files name for a given arg and open the quickfix menu
+
+- `:SessionsFzf` -- Use fzf to search and open sessions (requires [fzf.vim](https://github.com/junegunn/fzf.vim) or [fzf-lua](https://github.com/ibhagwan/fzf-lua))
+
+
 ### Notes
 
 - `:SaveNote` -- Save notes related to the session
@@ -44,7 +49,7 @@ Saving and opening sessions will work and automatically name the session file `m
 
 - `:GrepNotes *` -- Search all notes for given arg
 
-- `:GrepTicketNotesFzf` -- FZF grep notes (requires [FZF](https://github.com/junegunn/fzf.vim) for vim and [Fzf-lua](https://github.com/ibhagwan/fzf-lua) for neovim)
+- `:TicketNotesFzf` -- Use fzf to grep  and open notes (requires [fzf.vim](https://github.com/junegunn/fzf.vim) or [fzf-lua](https://github.com/ibhagwan/fzf-lua))
 
 
 ## Settings
@@ -95,7 +100,7 @@ Define the directory you want to store all session files within:
 let g:session_directory = '~/my_dir'
 ```
 
-Use `FZF` instead of vimgrep when executing `:GrepNotes`:
+Use `fzf` instead of vimgrep when executing `:GrepNotes` or `FindSessions`:
 
 ```vim
 let g:ticket_use_fzf_default = 1

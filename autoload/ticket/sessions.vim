@@ -27,3 +27,15 @@ function! ticket#sessions#GetAllSessionNames(repo) abort
   let files = globpath(g:session_directory . '/' . a:repo, '*.vim', 0, 1)
   return map(files, "fnamemodify(v:val, ':t:r')")
 endfunction
+
+
+function! ticket#sessions#FindSessions(query) abort
+  " returns all notes file paths that contain the given query
+  " TODO: find away to create a custom mapping for quickfix
+  "       https://vi.stackexchange.com/questions/21254/visual-delete-items-from-quickfix-list
+  "       /after/ftplugin/qf.vim could work but applies to all
+  "       quickfix lists
+  let ticketsdir = g:session_directory . '/**/*.vim'
+  execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
+  copen
+endfunction

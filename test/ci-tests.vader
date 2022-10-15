@@ -337,3 +337,8 @@ Execute(expect to delete current note file with DeleteCurrentAssocaitedFile):
   AssertEqual
   \  filereadable(file),
   \  0
+
+Execute(expect DeprecateCommand to error when executed):
+  AssertThrows
+  \  ticket#utils#DeprecatedCommand('old', 'new')
+
