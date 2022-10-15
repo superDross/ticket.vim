@@ -77,9 +77,14 @@ command! OpenNote :call ticket#notes#OpenNote()
 command! DeleteNote :call ticket#deletion#DeleteNote()
 
 if get(g:, 'ticket_use_fzf_default', 0)
-  command! -bang -nargs=* GrepNotes :call ticket#notes#GrepNotesFzf(<q-args>)
+  command! -bang -nargs=* GrepNotes :call ticket#fzf#notes#FzfNotes(<q-args>)
+  command! -bang -nargs=* FindSessions :call ticket#fzf#sessions#FzfSessions(<q-args>)
 else
   command! -nargs=1 GrepNotes :call ticket#notes#GrepNotes(<f-args>)
+  command! -nargs=1 FindSessions :call ticket#sessions#FindSessions(<f-args>)
 endif
 
-command! -bang -nargs=* GrepTicketNotesFzf :call ticket#notes#GrepNotesFzf(<q-args>)
+command! -bang -nargs=* TicketNotesFzf :call ticket#fzf#notes#FzfNotes(<q-args>)
+command! -bang -nargs=* TicketSessionsFzf :call ticket#fzf#sessions#FzfSessions(<q-args>)
+
+command! -bang -nargs=* GrepTicketNotesFzf :call ticket#utils#DeprecatedCommand('GrepTicketNotesFzf', 'TicketNotesFzf')

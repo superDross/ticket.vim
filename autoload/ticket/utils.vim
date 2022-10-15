@@ -22,3 +22,10 @@ function! ticket#utils#VeryVerbosePrint(msg) abort
     echo a:msg
   endif
 endfunction
+
+
+function! ticket#utils#DeprecatedCommand(old_command, new_command) abort
+  " echos a deprecation message for a command
+  echoerr 'DEPRECATED: ' . a:old_command . ' has been replaced with the ' . 
+  \ a:new_command . ' command'
+endfunction
