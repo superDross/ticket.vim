@@ -2,36 +2,25 @@
 
 Vim session management system with a focus on git branches.
 
+![manual-ticket-gif](https://user-images.githubusercontent.com/16519378/197326413-539badb9-e93f-49ad-a829-2c3d09e1f09d.gif)
+
+
 ## Usage
 
 ### Within a Git Repo
 
 Executing `:SaveSession` will save a session associated with the current branch checked out within the repo.
 
-Executing `OpenSession` will open the session you saved that is associated with the current branch name.
+Executing `:OpenSession` will open the session you saved that is associated with the current branch name.
 
 If you switch branch you can save/open a different session associated with the branch you just switched to without affecting other branch sessions.
 
-Automatic saving and opening branch specific session files is possible:
-
-![session-save-auto](https://user-images.githubusercontent.com/16519378/195995769-e3323079-c5f3-415e-9ed5-a582a9174625.gif)
-
-Searching and sourcing session files is possible with FZF integration:
-
-![fzf-session](https://user-images.githubusercontent.com/16519378/195995818-597233ee-b32e-4063-8a42-86d23fc86b79.gif)
-
-Markdown files for taking notes associated with the branch can be managed using `:SaveNote` and `:OpenNote`
-
-![note-save-open](https://user-images.githubusercontent.com/16519378/195995824-bcfc1a5d-51ff-46a0-8976-27ef07bb1fd1.gif)
-
-Searching note file contents and opening them is possible with FZF integration:
-
-![fzf-notes](https://user-images.githubusercontent.com/16519378/195995834-b8101bf5-4929-4cdc-8cc1-5faf557e5712.gif)
-
+`:SaveNote` and `:OpenNote` will save/open notes associated with the branch session.
 
 ### Outside a Git Repo
 
 Saving and opening sessions will work and automatically name the session file `main.vim` in case the directory is ever initialised as a git repo.
+
 
 ## Commands
 
@@ -150,6 +139,25 @@ require('packer').startup(function(use)
   }
 end)
 ```
+
+## Demo Features
+
+Automatic saving/opening sessions:
+
+![session-save-auto](https://user-images.githubusercontent.com/16519378/195995769-e3323079-c5f3-415e-9ed5-a582a9174625.gif)
+
+Find and open sessions using FZF:
+
+![fzf-session](https://user-images.githubusercontent.com/16519378/195995818-597233ee-b32e-4063-8a42-86d23fc86b79.gif)
+
+Save and open notes associated with a branch/session:
+
+![note-save-open](https://user-images.githubusercontent.com/16519378/195995824-bcfc1a5d-51ff-46a0-8976-27ef07bb1fd1.gif)
+
+Grepping note file contents and opening them using FZF:
+
+![fzf-notes](https://user-images.githubusercontent.com/16519378/195995834-b8101bf5-4929-4cdc-8cc1-5faf557e5712.gif)
+
 
 ## File Storage
 
