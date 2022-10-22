@@ -128,7 +128,7 @@ let g:ticket_very_verbose = 1
 
 ## Installation
 
-Requires vim 8.1+ or neovim 0.5+.
+Requires vim 8.0+ or neovim 0.5+.
 
 With [Vim-Plug](https://github.com/junegunn/vim-plug):
 
