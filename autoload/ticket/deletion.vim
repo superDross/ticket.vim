@@ -3,7 +3,7 @@
 " Module dealing with deletion of session files
 
 
-function! ticket#deletion#DeleteFiles(files) abort
+function! s:DeleteFiles(files) abort
   " delete all files in a given list
   " files: list of files to delete
   for file in a:files
@@ -59,7 +59,7 @@ function! ticket#deletion#DeleteOldSessions(force_input) abort
   let answer = a:force_input == 1 ? 'y' : input(q)
 
   if tolower(answer) ==# 'y'
-    call ticket#deletion#DeleteFiles(deletelist)
+    call s:DeleteFiles(deletelist)
   endif
 
 endfunction

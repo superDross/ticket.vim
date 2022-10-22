@@ -3,7 +3,7 @@
 " Fzf integration with note files
 
 
-function! ticket#fzf#notes#FzfLuaNotes(args = '') abort
+function! s:FzfLuaNotes(args) abort
   " interactiely search notes contents using fzf-lua
   if ticket#utils#IsInstalled('fzf-lua')
     lua require('fzf-lua').grep({
@@ -19,7 +19,7 @@ function! ticket#fzf#notes#FzfLuaNotes(args = '') abort
 endfunction
 
 
-function! ticket#fzf#notes#FzfVimNotes(args) abort
+function! s:FzfVimNotes(args) abort
   " interactiely search notes contents using fzf.vim
   if ticket#utils#IsInstalled('fzf.vim')
     call fzf#vim#grep(
@@ -34,7 +34,7 @@ endfunction
 function! ticket#fzf#notes#FzfNotes(args) abort
   " interactively search notes contents using junegunn/fzf.vim or fzf-lua
   if has('nvim') && ticket#utils#IsInstalled('fzf-lua')
-    return ticket#fzf#notes#FzfLuaNotes(a:args)
+    return s:FzfLuaNotes(a:args)
   endif
-  return ticket#fzf#notes#FzfVimNotes(a:args)
+  return s:FzfVimNotes(a:args)
 endfunction
