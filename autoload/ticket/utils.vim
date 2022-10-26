@@ -29,3 +29,15 @@ function! ticket#utils#DeprecatedCommand(old_command, new_command) abort
   echoerr 'DEPRECATED: ' . a:old_command . ' has been replaced with the ' . 
   \ a:new_command . ' command'
 endfunction
+
+
+function! ticket#utils#QuickFixFilter(query) abort
+  " opens & filters the quickfix results with a given query
+  copen
+  if a:query !=# ''
+    if !ticket#utils#IsInstalled('cfilter')
+      packadd cfilter
+    endif
+    execute 'Cfilter /' . a:query . '/'
+  endif
+endfunction
