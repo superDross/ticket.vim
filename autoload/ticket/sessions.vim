@@ -31,11 +31,10 @@ endfunction
 
 function! ticket#sessions#FindSessions(query) abort
   " returns all notes file paths that contain the given query
-  " TODO: find away to create a custom mapping for quickfix
-  "       https://vi.stackexchange.com/questions/21254/visual-delete-items-from-quickfix-list
-  "       /after/ftplugin/qf.vim could work but applies to all
-  "       quickfix lists
-  let ticketsdir = g:session_directory . '/**/*.vim'
-  execute 'vimgrep! /\c' . a:query . '/j ' . ticketsdir
-  copen
+  execute 'vimgrep /\%^/j ' . g:session_directory . '/**/*.vim'
+  call ticket#utils#QuickFixFilter(a:query)
+  " conceal file contents
+  syntax match ConcealedDetails /\v\|.*/ conceal
+  setlocal conceallevel=2
+  setlocal concealcursor=nvic
 endfunction

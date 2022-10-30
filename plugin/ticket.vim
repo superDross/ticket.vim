@@ -67,6 +67,14 @@ augroup AutoTicket
 augroup END
 
 
+augroup QuickFixMappings
+  " tried <CR> but cannot get it to only apply when FindSessions is used
+  " instead we opt for `O` as a means of calling source on the given selection
+  autocmd filetype qf 
+    \ nnoremap <buffer> O :execute 'source ' . split(getline('.'), '\|')[0]<CR>
+augroup END
+
+
 command! SaveSession :call ticket#sessions#CreateSession()
 command! OpenSession :call ticket#sessions#OpenSession()
 command! DeleteSession :call ticket#deletion#DeleteSession()
@@ -81,7 +89,7 @@ if get(g:, 'ticket_use_fzf_default', 0)
   command! -bang -nargs=* FindSessions :call ticket#fzf#sessions#FzfSessions(<q-args>)
 else
   command! -nargs=1 GrepNotes :call ticket#notes#GrepNotes(<f-args>)
-  command! -nargs=1 FindSessions :call ticket#sessions#FindSessions(<f-args>)
+  command! -nargs=* FindSessions :call ticket#sessions#FindSessions(<q-args>)
 endif
 
 command! -bang -nargs=* TicketNotesFzf :call ticket#fzf#notes#FzfNotes(<q-args>)

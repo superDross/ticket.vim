@@ -36,7 +36,7 @@ Saving and opening sessions will work and automatically name the session file `m
 
 - `:ForceCleanupSessions` -- Same as `CleanupSession` but forcefully removes without prompting user (only works within git repositories)
 
-- `:FindSessions *` -- Search all session files name for a given arg and open the quickfix menu
+- `:FindSessions *` -- Search all session files name for a given arg and open the quickfix menu (sourcing the sessions under the cursor can be performed by pressing `O`)
 
 - `:TicketSessionsFzf` -- Use fzf to search and open sessions (requires [fzf.vim](https://github.com/junegunn/fzf.vim) or [fzf-lua](https://github.com/ibhagwan/fzf-lua))
 
