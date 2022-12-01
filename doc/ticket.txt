@@ -3,16 +3,329 @@
 ===============================================================================
 Contents ~
 
- 1. Introduction                                         |ticket-introduction|
- 2. Commands                                                 |ticket-commands|
+ 1. Introduction                                             |ticket-introduction|
+ 2. Installation                                             |ticket-installation|
+ 3. Basic Usage                                              |ticket-usage|
+  1. Within a Git Repository
+  2. Outside a Git Repository
+ 4. Commands                                                 |ticket-commands|
   1. The |:SaveSession| command
   2. The |:OpenSession| command
+  3. The |:DeleteSession| command
+  4. The |:CleanupSessions| command
+  5. The |:ForceCleanupSessions| command
+  6. The |:FindSessions| command
+  7. The |:TicketSessionsFzf| command
+  8. The |:SaveNote| command
+  9. The |:OpenNote| command
+  10. The |:DeleteNote| command
+  11. The |:GrepNotes| command
+  12. The |:TicketNotesFzf| command
+ 5. Options                                                  |ticket-options|
+  1. Automatic Session Options                               |ticket-auto-options|
+   1. The |g:auto_ticket| option
+   2. The |g:auto_ticket_open| option
+   3. The |g:auto_ticket_save| option
+   4. The |g:auto_ticket_git_only| option
+   5. The |g:ticket_black_list| option
+  2. General Options                                         |ticket-general-options|
+   1. The |g:default_session_name| option
+   2. The |g:session_directory| option
+   3. The |g:ticket_use_fzf_default| option
+   4. The |g:ticket_very_verbose| option
+ 6. Contact                                                  |ticket-contact|
+ 7. License                                                  |ticket-license|
+
+
 ===============================================================================
                                                          *ticket-introduction*
 Introduction ~
 
-**Work In Progress**
+A vim session management system with a focus on git branches.
 
-See the GitHub README https://github.com/superDross/ticket.vim
- 
+This plugin intends to improve upon the existing |:mksession| command by allowing one to save/open sessions for a given directory or git repository. Sessions can be opened or saved manually or automatically depending upon the options set by the user.
+
+This allows us to save sessions in the same directory but within different branches and thereby seamlessly open/maintain different git branch based sessions.
+
+The session files are stored as below; git repository directory name with all branch specific session and note files within it.
+
+>
+	~/.local/share/tickets-vim/
+	│
+	└── <repository-name>/
+	   ├── <branch-name>.md
+	   └── <branch-name>.vim
+<
+
+The legacy root directory is `~/.tickets`, however, if this is not currently being used (or it has not been set via `g:session_directory`) then the XDG base directory spec will be followed.
+
+This will check and prioritise the directory set in `$XDG_DATA_HOME`, if not set then `~/.local/share` will be used.
+
 ===============================================================================
+                                                         *ticket-installation*
+Installation ~
+
+Use whatever plugin manager you like and ensure you parse 'superDross/ticket.vim' to it.
+
+Repository used for installation: https://github.com/superDross/ticket.vim
+
+
+===============================================================================
+                                                         *ticket-usage*
+Basic Usage ~
+
+-------------------------------------------------------------------------------
+Within a Git Repository
+
+Executing |:SaveSession| will save a session associated with the current branch checked out within the repo.
+
+Executing |:OpenSession| will open the session you saved that is associated with the current branch name.
+
+If you switch branch you can save/open a different session associated with the branch you just switched to without affecting other branch sessions.
+
+|:SaveNote| and |:OpenNote| will save/open notes associated with the branch session.
+
+-------------------------------------------------------------------------------
+Outside a Git Repository
+ 
+Saving and opening sessions will work and automatically name the session file main.vim in case the directory is ever initialised as a git repo.
+
+===============================================================================
+                                                         *ticket-commands*
+Commands ~
+
+
+-------------------------------------------------------------------------------
+The *:SaveSession* command
+
+Executing this command within a local git repository will save a session (much like with |:mksession|) associated with the current branch checked out within the repo.
+
+For example if we save a session in the run-with-me local repository in the
+main branch and also the fix-awful-bug branch, the file tree would look as
+follows:
+
+>
+	~/.local/share/tickets-vim/
+	│
+	└── run-with-me/
+	   ├── main.vim
+	   └── fix-awful-bug.vim
+<
+
+Outside a git repository, it simply saves a session associated with the
+current working directory, but always calls the file main.vim in-case the
+directory is ever initiated as an git repository.
+
+For example if save a session within a directory named local, the file tree
+would look as follows:
+
+>
+	~/.local/share/tickets-vim/
+	│
+	└── local
+	   ├── main.vim
+<
+
+-------------------------------------------------------------------------------
+The *:OpenSession* command
+
+Opens a session associated with the currently checked out branch if in a git
+repository.
+
+If not a git repository then it will open the session associated with the
+current working directory.
+
+-------------------------------------------------------------------------------
+The *:DeleteSession* command
+
+Deletes the session associated with the currently checkout branch (if within a
+git repository) or with the current working directory.
+
+You will be prompted to confirm deletion before the session is removed from the system.
+
+-------------------------------------------------------------------------------
+The *:CleanupSessions* command
+
+Deletes all sessions that no longer has a local branch. This will only work
+when the current working directory is a git repository.
+
+For example, if we deleted a git branch and then executed the current command,
+the session associated with said deleted branch would also be removed.
+
+You will be prompted to confirm deletion before the sessions are removed from
+the system.
+
+-------------------------------------------------------------------------------
+The *:ForceCleanupSessions* command
+
+Like |:CleanupSessions| but you will not be prompted for confirmation, the sessions will simply be deleted.
+
+-------------------------------------------------------------------------------
+The *:FindSessions: command
+
+Populates the quickfix menu with all sessions created using this plugin. If an
+argument is parsed to the command then the quickfix results will be filtered
+for it based upon the session filename.
+
+To open the session of interest that is under the cursor, press `O` within the
+quickfix menu.
+
+-------------------------------------------------------------------------------
+The *:FindSessionsFzf: command
+
+Allows one to search and filter session files using fzf.
+
+This requires either the fzf.vim or fzf-lua.vim plugin to work.
+
+https://github.com/junegunn/fzf.vim
+
+https://github.com/ibhagwan/fzf-lua
+
+-------------------------------------------------------------------------------
+The *:SaveNote* command
+
+Executing this command within a local git repository will save a note associated with the current branch checked out within the repo.
+
+-------------------------------------------------------------------------------
+The *:OpenNote* command
+
+Opens a markdown notefile associated with the currently checked out branch if in a git
+repository.
+
+The purpose of this is to write notes in relation to the objective of the branch e.g. writing notes about a system you wish to improve as part of the branch.
+
+If not a git repository then it will open the note associated with the
+current working directory.
+
+-------------------------------------------------------------------------------
+The *:DeleteNote* command
+
+Executing this command within a local git repository will delete a note associated with the current branch checked out within the repo, provided it exists.
+
+-------------------------------------------------------------------------------
+The *:GrepNotes* command
+
+Uses vimgrep to place all the files containing a given sub-string into the quickfix menu.
+
+-------------------------------------------------------------------------------
+The *:TicketNotesFzf* command
+
+Like |:GrepNotes| but uses fzf
+
+This requires either the fzf.vim or fzf-lua.vim plugin to work.
+
+https://github.com/junegunn/fzf.vim
+
+https://github.com/ibhagwan/fzf-lua
+
+
+===============================================================================
+                                                         *ticket-options*
+Options ~
+
+The following Vim options and plug-in options (global variables) can be used to
+configure the plug-in to your preferences.
+
+-------------------------------------------------------------------------------
+                                                         *ticket-auto-options* 
+Automatic Session Options ~
+
+This details the global options available for automatically saving and opening sessions.
+
+-------------------------------------------------------------------------------
+The *g:auto_ticket* option
+
+To automatically open and save session files when opening/closing vim set the following in your |vimrc| script:
+>
+  :let g:auto_ticket = 1
+<
+
+-------------------------------------------------------------------------------
+The *g:auto_ticket_open* option
+
+To automatically open session files when **only** opening vim set the following in your |.vimrc| script:
+>
+  :let g:auto_ticket_open = 1
+<
+
+-------------------------------------------------------------------------------
+The *g:auto_ticket_save* option
+
+To automatically save session files when **only** closing vim set the following in your |.vimrc| script:
+>
+  :let g:auto_ticket_save = 1
+<
+
+-------------------------------------------------------------------------------
+The *g:auto_ticket_git_only* option
+
+To **only** allow the auto feature to work in git repo directories set the following in your |.vimrc| script:
+>
+  :let g:auto_ticket_open = 1
+<
+
+-------------------------------------------------------------------------------
+The *g:ticket_black_list* option
+
+Black list some branches from being used with the auto feature. Example of disallowing the master or other-branch sessions from being auto opened/saved:
+>
+  :let g:ticket_black_list = ['master', 'other-branch']
+<
+
+-------------------------------------------------------------------------------
+                                                         *ticket-general-options* 
+General Options ~
+
+These are general options where we can override the default values set by the plugin.
+
+-------------------------------------------------------------------------------
+The *g:default_session_name* option
+
+Define a default branch name that will used to name all non git repo session files (default: main):
+
+>
+  :let g:default_session_name = 'master'
+<
+
+-------------------------------------------------------------------------------
+The *g:session_directory* option
+
+Define the directory you want to store all session files within (default: ~/.local/share/tickets-vim/):
+
+>
+  :let g:session_directory = '~/my-dir'
+<
+
+-------------------------------------------------------------------------------
+The *g:ticket_use_fzf* option
+
+
+Use fzf instead of vimgrep when executing |:GrepNotes| or |:FindSessions|:
+
+>
+  :let g:ticket_use_fzf = 1
+<
+
+-------------------------------------------------------------------------------
+The *g:ticket_very_verbose* option
+
+Print save/open messages when saving/opening sessions/notes:
+
+>
+  :let g:ticket_very_verbose = 1
+<
+
+===============================================================================
+                                                              *ticket-contact*
+Contact ~
+
+If you have questions, bug reports, suggestions, etc. please consider opening an issue
+within the repository http://github.com/superDross/ticket.vim
+
+===============================================================================
+                                                              *ticket-license*
+License ~
+
+This software is licensed under the GNU General Public License v3.0 © 2022 David Ross.
+
+vim: ft=help

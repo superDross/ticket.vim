@@ -7,6 +7,12 @@ Vim session management system with a focus on git branches.
 
 ## Usage
 
+For in vim docs, execute the following command:
+
+```vim
+:help ticket.vim
+```
+
 ### Within a Git Repo
 
 Executing `:SaveSession` will save a session associated with the current branch checked out within the repo.
@@ -102,7 +108,7 @@ Define the directory you want to store all session files within:
 let g:session_directory = '~/my_dir'
 ```
 
-Use `fzf` instead of vimgrep when executing `:GrepNotes` or `FindSessions`:
+Use `fzf` instead of vimgrep when executing `:GrepNotes` or `:FindSessions`:
 
 ```vim
 let g:ticket_use_fzf_default = 1
@@ -190,3 +196,7 @@ When creating fixes/features you can test that your changes do not break any exi
 ```sh
 make tests
 ```
+
+## Manually Documentation Generation
+
+Your package manager should take care of this but if you want to generate them yourself you should execute `:helptags /dir/to/ticket/doc/`.
