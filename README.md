@@ -108,18 +108,23 @@ Define the directory you want to store all session files within:
 let g:session_directory = '~/my_dir'
 ```
 
-Use `fzf` instead of vimgrep when executing `:GrepNotes` or `:FindSessions`:
+Use `fzf` instead of vimgrep when executing `:GrepNotes` or `:FindSessions` (default: 0):
 
 ```vim
 let g:ticket_use_fzf_default = 1
 ```
 
-Print save/open messages when saving/opening sessions/notes:
+Print save/open messages when saving/opening sessions/notes (default: 0):
 
 ```vim
 let g:ticket_very_verbose = 1
 ```
 
+Ask for confirmation before overwriting existing session file (default: 0):
+
+```vim
+let g:ticket_overwrite_confirm = 1
+```
 
 ## Installation
 

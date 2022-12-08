@@ -44,6 +44,11 @@ if !exists('g:ticket_very_verbose')
 endif
 
 
+if !exists('g:ticket_overwrite_confirm')
+  let g:ticket_overwrite_confirm = 0
+endif
+
+
 if !exists('g:session_directory')
   " ~/.tickets should be hard coded within the function, it is not simply for
   " testing purposes

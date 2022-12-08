@@ -3,12 +3,26 @@
 " High level functions for creating, opening and getting sessions
 
 
+function! s:OverwriteConfirmed(sessionfile) abort
+  " ask for user confirmation before overwriting the session file
+  if filereadable(expand(a:sessionfile)) && g:ticket_overwrite_confirm
+    let msg = 'Are you sure you want to overwrite the existing session file? (y/n): '
+    let answer = tolower(input(msg)) ==# 'y' ?  1 : 0
+    redraw
+    return answer
+  endif
+  return 1
+endfunction
+
+
 function! ticket#sessions#CreateSession() abort
   " creates or overwrites the session file associated with the git branch or
   " directory name in the working directory
   let sessionfile = ticket#files#GetSessionFilePath('.vim')
-  execute 'silent mksession! ' . sessionfile
-  call ticket#utils#VeryVerbosePrint('Session Saved: ' . sessionfile)
+  if s:OverwriteConfirmed(sessionfile)
+    execute 'silent mksession! ' . sessionfile
+    call ticket#utils#VeryVerbosePrint('Session Saved: ' . sessionfile)
+  endif
 endfunction
 
 
