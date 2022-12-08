@@ -33,6 +33,7 @@ Contents ~
    2. The |g:session_directory| option
    3. The |g:ticket_use_fzf_default| option
    4. The |g:ticket_very_verbose| option
+   5. The |g:ticket_overwrite_confirm| option
  6. Contact                                             |ticket-contact|
  7. License                                             |ticket-license|
 
@@ -345,6 +346,16 @@ Print save/open messages when saving/opening sessions/notes:
 
 >
   :let g:ticket_very_verbose = 1
+
+
+--------------------------------------------------------------------------------
+The *g:ticket_overwrite_confirm* option
+
+Ask for confirmation before overwriting existing session file (default: 0):
+
+>
+  :let g:ticket_overwrite_confirm = 1
+<
 <
 
 ================================================================================
