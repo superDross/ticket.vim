@@ -6,8 +6,11 @@
 function! s:OverwriteConfirmed(sessionfile) abort
   " ask for user confirmation before overwriting the session file
   if filereadable(expand(a:sessionfile)) && g:ticket_overwrite_confirm
-    let msg = 'Are you sure you want to overwrite the existing session file? (y/n): '
+    let msg = 'WARNING: are you sure you want to overwrite
+               \ the existing session file? (y/n): '
+    echohl WarningMsg
     let answer = tolower(input(msg)) ==# 'y' ?  1 : 0
+    echohl None
     redraw
     return answer
   endif
