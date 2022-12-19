@@ -29,7 +29,7 @@ Execute(expect GetAllBranchNames to return the correct branch when using forward
   call system('git branch --force feature/test_2 master')
   let branchnames = ticket#git#GetAllBranchNames()
   AssertNotEqual
-  \  index(branchnames, "test_2"),
+  \  index(branchnames, "feature\\%test_2"),
   \ -1
 
 Execute(expect GetAllBranchNames strip forward slash prefixes):

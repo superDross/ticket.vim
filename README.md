@@ -194,6 +194,9 @@ This will check and prioritise the directory set in `$XDG_DATA_HOME`, if not set
 
 - This plugin assumes it has the appropriate permissions for modifying files locally
 
+- All `/` substrings in a branch will be replaced with `%` as `/` cannot be part of a files name in *NIX based systems
+
+
 ## Developing
 
 When creating fixes/features you can test that your changes do not break any existing features by executing the following make command in the root directory of the project:

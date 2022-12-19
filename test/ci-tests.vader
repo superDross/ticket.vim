@@ -17,9 +17,9 @@ After:
 
 
 Execute(expect ticket#git#GetBranchName pass):
-  let branchname = system(
-    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
-    \ )
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
   AssertEqual
     \ ticket#git#GetBranchName(),
     \ branchname
@@ -152,9 +152,9 @@ Execute(expect ticket#notes#CreateNote pass):
     \ )
 
 Execute(expect ticket#blacklist#BranchInBlackList pass):
-  let branchname = system(
-    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
-    \ )
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
   let g:ticket_black_list = [branchname, 'other-branch']
   AssertEqual
     \ ticket#blacklist#BranchInBlackList(),
@@ -229,9 +229,9 @@ Execute(expect ticket#auto#ShouldAutoSave should work with auto_git_only set):
 
 Execute(expect ticket#auto#ShouldAutoSave should not work in current branch if black listed):
   let g:auto_ticket_save = 1
-  let branchname = system(
-    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
-    \ )
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
   let g:ticket_black_list = [branchname]
   AssertEqual
     \ ticket#auto#ShouldAutoSave(),
@@ -275,9 +275,9 @@ Execute(expect ticket#auto#ShouldAutoOpen should work with auto_git_only set):
 
 Execute(expect ticket#auto#ShouldAutoOpen should not work in current branch if black listed):
   let g:auto_ticket_open = 1
-  let branchname = system(
-    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
-    \ )
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
   let g:ticket_black_list = [branchname]
   AssertEqual
     \ ticket#auto#ShouldAutoOpen(),
