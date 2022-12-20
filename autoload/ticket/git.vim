@@ -5,8 +5,10 @@
 
 function! s:NormaliseBranchName(full_branch_name) abort
   " remove/replace unwanted substrings from the given branchname
+  " files cannot contain / in unix file systems, % must be escaped
   let partial = substitute(a:full_branch_name, '\n', '', 'g')
-  return substitute(partial, '/', '\\%', 'g')
+  let partial = substitute(partial, '/', '%', 'g')
+  return substitute(partial, '%', '\\%', 'g')
 endfunction
 
 

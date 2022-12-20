@@ -39,3 +39,9 @@ Execute(expect GetAllBranchNames strip forward slash prefixes):
   \  index(branchnames, "feature/test_2"),
   \ -1
 
+Execute(expect GetAllBranchNames to escape special chars):
+  call system('git branch --force branch-with-special-%-chars')
+  let branchnames = ticket#git#GetAllBranchNames()
+  AssertNotEqual
+  \  index(branchnames, "branch-with-special-\\%-chars"),
+  \ -1
