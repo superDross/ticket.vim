@@ -34,8 +34,10 @@ Contents ~
    3. The |g:ticket_use_fzf_default| option
    4. The |g:ticket_very_verbose| option
    5. The |g:ticket_overwrite_confirm| option
- 6. Contact                                             |ticket-contact|
- 7. License                                             |ticket-license|
+   6. The |g:ticket_legacy_filename| option
+ 6. Deprecations                                        |ticket-deprecations|
+ 7. Contact                                             |ticket-contact|
+ 8. License                                             |ticket-license|
 
 
 ================================================================================
@@ -346,7 +348,7 @@ Print save/open messages when saving/opening sessions/notes:
 
 >
   :let g:ticket_very_verbose = 1
-
+>
 
 --------------------------------------------------------------------------------
 The *g:ticket_overwrite_confirm* option
@@ -356,7 +358,49 @@ Ask for confirmation before overwriting existing session file (default: 0):
 >
   :let g:ticket_overwrite_confirm = 1
 <
+
+--------------------------------------------------------------------------------
+The *g:ticket_legacy_filename* option
+
+Use legacy session filenames system (see `:help ticket-deprecations` for more info):
+
+>
+  :let g:ticket_legacy_filename = 1
 <
+
+================================================================================
+                                                              *ticket-deprecations*
+Deprecations ~
+
+This current version has altered the way session names are saved.
+
+Previously, any branch names containing a forward slash would be partially
+stripped. For example, a branch named `fix/this-bug` would be saved as
+`this-bug.vim`. This is because files cannot contain forward slashes in
+*NIX based operating systems.
+
+This is a problem if you have both a branch named `fix/this-bug` and `this-bug`
+as they will write to the same session file.
+
+Going forward all forward slashes will be converted to `%`.
+
+To be clear, if a branch is named `fix/this-bug` it will be saved as a session
+file named `fix%this-bug.vim` from now on.
+
+If you want to continue to use the legacy naming system please set the following
+option in your vimrc:
+
+>
+  :let g:ticket_legacy_filename = 1
+<
+
+This will be removed in version 2.0.0 and then the new session saving system will
+be set in place.
+
+To migrate your old sessions I recommend searching for your old sessions using
+`FindSessions` or `TicketSessionsFzf` and selecting your session of interest
+which will open it. From there execute `SaveSession` to save the session with
+the new session naming scheme.
 
 ================================================================================
                                                               *ticket-contact*

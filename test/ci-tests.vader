@@ -1,4 +1,6 @@
 Before:
+  " TODO: remove this before 2.0.0 release
+  let g:ticket_legacy_filenames = 0
   call system('touch ~/test.file')
   call system('mkdir -p /tmp/temp')
   call system('mkdir -p /tmp/temp2')
@@ -23,6 +25,16 @@ Execute(expect ticket#git#GetBranchName pass):
   AssertEqual
     \ ticket#git#GetBranchName(),
     \ branchname
+
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#git#GetBranchName use legacy branchname with ticket_legacy_filename):
+  let g:ticket_legacy_filenames = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+   AssertEqual
+     \ ticket#git#GetBranchName(),
+     \ branchname
 
 Execute(expect g:auto_ticket to autoset to zero):
   AssertEqual
@@ -160,6 +172,18 @@ Execute(expect ticket#blacklist#BranchInBlackList pass):
     \ ticket#blacklist#BranchInBlackList(),
     \ 1
 
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#blacklist#BranchInBlackList pass):
+  let g:ticket_legacy_filenames = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+  let g:ticket_black_list = [branchname, 'other-branch']
+  AssertEqual
+    \ ticket#blacklist#BranchInBlackList(),
+    \ 1
+
+
 Execute(expect ticket#blacklist#BranchInBlackList fail):
   AssertEqual
     \ ticket#blacklist#BranchInBlackList(),
@@ -237,6 +261,18 @@ Execute(expect ticket#auto#ShouldAutoSave should not work in current branch if b
     \ ticket#auto#ShouldAutoSave(),
     \ 0
 
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#auto#ShouldAutoSave should not work in current branch if black listed LEGACY):
+  let g:ticket_legacy_filenames = 1
+  let g:auto_ticket_save = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+  let g:ticket_black_list = [branchname]
+  AssertEqual
+    \ ticket#auto#ShouldAutoSave(),
+    \ 0
+
 Execute(expect ticket#auto#ShouldAutoSave should work if outside black listed branhces):
   let g:auto_ticket_save = 1
   let g:ticket_black_list = ['something']
@@ -278,6 +314,19 @@ Execute(expect ticket#auto#ShouldAutoOpen should not work in current branch if b
   let branchname = substitute(system(
     \ 'git symbolic-ref --short HEAD | tr -d "\n"'
     \ ), '/', '\\%', 'g')
+  let g:ticket_black_list = [branchname]
+  AssertEqual
+    \ ticket#auto#ShouldAutoOpen(),
+    \ 0
+
+
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#auto#ShouldAutoOpen should not work in current branch if black listed LEGACY):
+  let g:ticket_legacy_filenames = 1
+  let g:auto_ticket_open = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
   let g:ticket_black_list = [branchname]
   AssertEqual
     \ ticket#auto#ShouldAutoOpen(),

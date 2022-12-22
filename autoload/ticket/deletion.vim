@@ -30,6 +30,8 @@ function! ticket#deletion#DeleteCurrentAssociatedFile(ext, force_input) abort
   " force_input: either 0 or 1, 1 means not prompting user before deleting
   let file = ticket#files#GetSessionFilePathOnlyIfExists(a:ext)
 
+  " TODO: if the answer is not y/yes/Y/YES/n/no/N/NO then ask user to input
+  " again
   let q = 'Are you sure you want to delete ' . fnamemodify(file, ':t') . '? (y/n): '
   let answer = a:force_input == 1 ? 'y' : input(q)
 
