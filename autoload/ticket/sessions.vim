@@ -5,7 +5,9 @@
 
 function! s:OverwriteConfirmed(sessionfile) abort
   " ask for user confirmation before overwriting the session file
-  if filereadable(expand(a:sessionfile)) && g:ticket_overwrite_confirm
+  " will not work if the autosave feature is enabled
+  let autosave_on = g:auto_ticket_save || g:auto_ticket
+  if filereadable(expand(a:sessionfile)) && g:ticket_overwrite_confirm && !autosave_on
     let msg = 'WARNING: are you sure you want to overwrite
                \ the existing session file? (y/n): '
     echohl WarningMsg
