@@ -67,8 +67,12 @@ endfunction
 function! ticket#files#GetSessionsWithoutBranches() abort
   " return a list of session files associated with the current working
   " directory that do not have local branches
-  let branches = ticket#git#GetAllBranchNames()
   let repo = ticket#git#GetRepoName()
+  " remove the backslashes so the branch names can match the session names
+  let branches = map(
+    \ ticket#git#GetAllBranchNames(),
+    \ 'ticket#utils#RemoveBackSlashes(v:val)'
+  \ )
 
   let session_list = []
   for session in ticket#sessions#GetAllSessionNames(repo)

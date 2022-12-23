@@ -48,6 +48,19 @@ if !exists('g:ticket_overwrite_confirm')
   let g:ticket_overwrite_confirm = 0
 endif
 
+" TODO: remove in the next major version
+if !exists('g:ticket_legacy_filenames')
+  let g:ticket_legacy_filenames = 0
+else
+  augroup DeprecationWarning
+    autocmd VimEnter *
+      \ :echohl WarningMsg |
+      \ echo 'WARNING: g:ticket_legacy_filenames will be removed in the near future
+      \ (:help ticket-deprecations for more information).' |
+      \ echohl None
+  augroup END
+endif
+
 
 if !exists('g:session_directory')
   " ~/.tickets should be hard coded within the function, it is not simply for
@@ -100,4 +113,5 @@ endif
 command! -bang -nargs=* TicketNotesFzf :call ticket#fzf#notes#FzfNotes(<q-args>)
 command! -bang -nargs=* TicketSessionsFzf :call ticket#fzf#sessions#FzfSessions(<q-args>)
 
+" TODO: remove in the next major release
 command! -bang -nargs=* GrepTicketNotesFzf :call ticket#utils#DeprecatedCommand('GrepTicketNotesFzf', 'TicketNotesFzf')

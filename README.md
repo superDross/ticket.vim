@@ -13,6 +13,14 @@ For in vim docs, execute the following command:
 :help ticket.vim
 ```
 
+<!-- TODO: remove or modify this after increasing to the next major version -->
+
+> :warning: **Deprecation Warning**
+>
+> Session naming has changed; any branches containing `/` will have a different session
+> filename. Execute `:help ticket-deprecations` for more information.
+
+
 ### Within a Git Repo
 
 Executing `:SaveSession` will save a session associated with the current branch checked out within the repo.
@@ -126,6 +134,12 @@ Ask for confirmation before overwriting existing session file, will not work if 
 let g:ticket_overwrite_confirm = 1
 ```
 
+Use legacy session filenames system (see `:help ticket-deprecations` for more info):
+
+```vim
+let g:ticket_legacy_filename = 1
+```
+
 ## Installation
 
 Requires vim 8.0+ or neovim 0.5+.
@@ -194,6 +208,9 @@ This will check and prioritise the directory set in `$XDG_DATA_HOME`, if not set
 
 - This plugin assumes it has the appropriate permissions for modifying files locally
 
+- All `/` substrings in a branch name will be replaced with `%` as `/` cannot be part of a files name in *NIX based systems
+
+
 ## Developing
 
 When creating fixes/features you can test that your changes do not break any existing features by executing the following make command in the root directory of the project:
@@ -202,6 +219,6 @@ When creating fixes/features you can test that your changes do not break any exi
 make tests
 ```
 
-## Manually Documentation Generation
+## Manual Documentation Generation
 
-Your package manager should take care of this but if you want to generate them yourself you should execute `:helptags /dir/to/ticket/doc/`.
+Your package manager should take care of generating the documentation, however, if you want to generate them yourself you should execute `:helptags /dir/to/ticket.vim/doc/`.

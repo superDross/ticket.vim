@@ -2,6 +2,22 @@
 "
 " All git command line interactions are stored here
 
+
+function! s:NormaliseBranchName(full_branch_name) abort
+  " remove/replace unwanted substrings from the given branchname
+  " files cannot contain / in unix file systems, % must be escaped
+
+  " TODO: remove in the next major version
+  if g:ticket_legacy_filenames
+    return substitute(a:full_branch_name, '.*/\|\n', '', 'g')
+  endif
+
+  let partial = substitute(a:full_branch_name, '\n', '', 'g')
+  let partial = substitute(partial, '/', '%', 'g')
+  return substitute(partial, '%', '\\%', 'g')
+endfunction
+
+
 function! ticket#git#CheckIfGitRepo() abort
   " returns 1 if working directory is a git repository, otherwise returns 0
   let msg = system('git rev-parse --is-inside-work-tree')
@@ -22,20 +38,18 @@ endfunction
 
 
 function! ticket#git#GetBranchName() abort
-  " returns the branch name checked out in the current working directory.
-  " removes newlines or leading branch prefixes (e.g. feature/, bugfix/ etc.)
+  " returns the normalised branch name checked out in the current working directory
   let full_branch_name = system('git symbolic-ref --short HEAD')
-  return substitute(full_branch_name, '.*/\|\n', '', 'g')
+  return s:NormaliseBranchName(full_branch_name)
 endfunction
 
 
 function! ticket#git#GetAllBranchNames() abort
-  " returns a list of all branch names (stripped of feature/bugfix prefix)
-  " associated within the current repo
+  " returns a list of all normalised branch names
   let branchnames = split(
   \  system("git for-each-ref --format='%(refname:short)' refs/heads")
   \)
-  return map(branchnames, "substitute(v:val, '.*/', '', '')")
+  return map(branchnames, 's:NormaliseBranchName(v:val)')
 endfunction
 
 

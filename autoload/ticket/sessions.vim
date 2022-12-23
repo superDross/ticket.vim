@@ -41,8 +41,7 @@ endfunction
 
 
 function! ticket#sessions#GetAllSessionNames(repo) abort
-  " returns all session names stripped of feature/bugfix prefix & extension
-  " for a given repo
+  " returns all session names associated with the given repo
   let files = globpath(g:session_directory . '/' . a:repo, '*.vim', 0, 1)
   return map(files, "fnamemodify(v:val, ':t:r')")
 endfunction

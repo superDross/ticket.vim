@@ -3,11 +3,20 @@
 " Module dealing with deletion of session files
 
 
+function! s:DeleteFile(file) abort
+  " removes backslashes from filenames before deleting
+  " NOTE: back slashes are required in the filename with
+  " special characters but need to be removed when deleting
+  " the file, otherwise the file will not be found
+  call delete(ticket#utils#RemoveBackSlashes(a:file))
+endfunction
+
+
 function! s:DeleteFiles(files) abort
   " delete all files in a given list
   " files: list of files to delete
   for file in a:files
-    call delete(file)
+    call s:DeleteFile(file)
   endfor
 endfunction
 
@@ -29,12 +38,10 @@ function! ticket#deletion#DeleteCurrentAssociatedFile(ext, force_input) abort
   " ext: either 'vim' or 'md' to denote the file extension
   " force_input: either 0 or 1, 1 means not prompting user before deleting
   let file = ticket#files#GetSessionFilePathOnlyIfExists(a:ext)
-
   let q = 'Are you sure you want to delete ' . fnamemodify(file, ':t') . '? (y/n): '
   let answer = a:force_input == 1 ? 'y' : input(q)
-
+    call s:DeleteFile(file)
   if tolower(answer) ==# 'y'
-    call delete(file)
   endif
 endfunction
 

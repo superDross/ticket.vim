@@ -3,6 +3,12 @@
 " Various utility functions used throughout the project
 
 
+function! ticket#utils#RemoveBackSlashes(str) abort
+  " remove backslashes from a given string
+  return substitute(a:str, '\\', '', 'g')
+endfunction
+
+
 function! ticket#utils#IsInstalled(package) abort
   " check if the given package is installed or not
   let loaded_packages = filter(

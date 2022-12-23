@@ -1,4 +1,6 @@
 Before:
+  " TODO: remove this before 2.0.0 release
+  let g:ticket_legacy_filenames = 0
   call system('touch ~/test.file')
   call system('mkdir -p /tmp/temp')
   call system('mkdir -p /tmp/temp2')
@@ -17,12 +19,22 @@ After:
 
 
 Execute(expect ticket#git#GetBranchName pass):
-  let branchname = system(
-    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
-    \ )
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
   AssertEqual
     \ ticket#git#GetBranchName(),
     \ branchname
+
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#git#GetBranchName use legacy branchname with ticket_legacy_filename):
+  let g:ticket_legacy_filenames = 1
+  let branchname = system(
+    \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
+    \ )
+   AssertEqual
+     \ ticket#git#GetBranchName(),
+     \ branchname
 
 Execute(expect g:auto_ticket to autoset to zero):
   AssertEqual
@@ -152,6 +164,17 @@ Execute(expect ticket#notes#CreateNote pass):
     \ )
 
 Execute(expect ticket#blacklist#BranchInBlackList pass):
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
+  let g:ticket_black_list = [branchname, 'other-branch']
+  AssertEqual
+    \ ticket#blacklist#BranchInBlackList(),
+    \ 1
+
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#blacklist#BranchInBlackList pass):
+  let g:ticket_legacy_filenames = 1
   let branchname = system(
     \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
     \ )
@@ -159,6 +182,7 @@ Execute(expect ticket#blacklist#BranchInBlackList pass):
   AssertEqual
     \ ticket#blacklist#BranchInBlackList(),
     \ 1
+
 
 Execute(expect ticket#blacklist#BranchInBlackList fail):
   AssertEqual
@@ -229,6 +253,18 @@ Execute(expect ticket#auto#ShouldAutoSave should work with auto_git_only set):
 
 Execute(expect ticket#auto#ShouldAutoSave should not work in current branch if black listed):
   let g:auto_ticket_save = 1
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
+  let g:ticket_black_list = [branchname]
+  AssertEqual
+    \ ticket#auto#ShouldAutoSave(),
+    \ 0
+
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#auto#ShouldAutoSave should not work in current branch if black listed LEGACY):
+  let g:ticket_legacy_filenames = 1
+  let g:auto_ticket_save = 1
   let branchname = system(
     \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
     \ )
@@ -274,6 +310,19 @@ Execute(expect ticket#auto#ShouldAutoOpen should work with auto_git_only set):
     \ 1
 
 Execute(expect ticket#auto#ShouldAutoOpen should not work in current branch if black listed):
+  let g:auto_ticket_open = 1
+  let branchname = substitute(system(
+    \ 'git symbolic-ref --short HEAD | tr -d "\n"'
+    \ ), '/', '\\%', 'g')
+  let g:ticket_black_list = [branchname]
+  AssertEqual
+    \ ticket#auto#ShouldAutoOpen(),
+    \ 0
+
+
+" TODO: remove this before 2.0.0 release
+Execute(expect ticket#auto#ShouldAutoOpen should not work in current branch if black listed LEGACY):
+  let g:ticket_legacy_filenames = 1
   let g:auto_ticket_open = 1
   let branchname = system(
     \ 'git symbolic-ref --short HEAD | tr "/" "\n" | tail -n 1 | tr -d "\n"'
@@ -343,3 +392,8 @@ Execute(expect DeprecateCommand to error when executed):
   AssertThrows
   \  ticket#utils#DeprecatedCommand('old', 'new')
 
+
+Execute(expect RemoveBackSlashes remove backslashes):
+  AssertEqual
+  \  ticket#utils#RemoveBackSlashes('fix\%this-\%-bug'),
+  \  'fix%this-%-bug'
