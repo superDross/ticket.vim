@@ -351,7 +351,8 @@ Print save/open messages when saving/opening sessions/notes:
 --------------------------------------------------------------------------------
 The *g:ticket_overwrite_confirm* option
 
-Ask for confirmation before overwriting existing session file (default: 0):
+Ask for confirmation before overwriting existing session file, will not work
+if the autosave feature is enabled (default: 0):
 
 >
   :let g:ticket_overwrite_confirm = 1

@@ -120,7 +120,7 @@ Print save/open messages when saving/opening sessions/notes (default: 0):
 let g:ticket_very_verbose = 1
 ```
 
-Ask for confirmation before overwriting existing session file (default: 0):
+Ask for confirmation before overwriting existing session file, will not work if auto save feature are enabled (default: 0):
 
 ```vim
 let g:ticket_overwrite_confirm = 1
