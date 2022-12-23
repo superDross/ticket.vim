@@ -47,3 +47,21 @@ Execute(expect GetAllBranchNames to escape special chars):
   AssertNotEqual
   \  index(branchnames, "branch-with-special-\\%-chars"),
   \ -1
+
+Execute(expect to DeleteSession):
+  call system('git branch --force cool-branch-to-delete')
+  call system('git checkout cool-branch-to-delete')
+  call ticket#sessions#CreateSession()
+  call ticket#deletion#DeleteCurrentAssociatedFile('.vim', 1)
+  call system('git checkout -')
+  AssertThrows
+  \  ticket#files#GetSessionFilePathOnlyIfExists('.vim')
+
+Execute(expect to DeleteSession with branches with special chars):
+  call system('git branch --force fix/cool-branch-to-delete-%-this')
+  call system('git checkout fix/cool-branch-to-delete-%-this')
+  call ticket#sessions#CreateSession()
+  call ticket#deletion#DeleteCurrentAssociatedFile('.vim', 1)
+  call system('git checkout -')
+  AssertThrows
+  \  ticket#files#GetSessionFilePathOnlyIfExists('.vim')

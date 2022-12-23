@@ -392,3 +392,8 @@ Execute(expect DeprecateCommand to error when executed):
   AssertThrows
   \  ticket#utils#DeprecatedCommand('old', 'new')
 
+
+Execute(expect RemoveBackSlashes remove backslashes):
+  AssertEqual
+  \  ticket#utils#RemoveBackSlashes('fix\%this-\%-bug'),
+  \  'fix%this-%-bug'
