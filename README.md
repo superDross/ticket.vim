@@ -216,7 +216,7 @@ This will check and prioritise the directory set in `$XDG_DATA_HOME`, if not set
 When creating fixes/features you can test that your changes do not break any existing features by executing the following make command in the root directory of the project:
 
 ```sh
-make tests
+make test
 ```
 
 ## Manual Documentation Generation
