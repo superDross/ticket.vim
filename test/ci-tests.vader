@@ -392,8 +392,54 @@ Execute(expect DeprecateCommand to error when executed):
   AssertThrows
   \  ticket#utils#DeprecatedCommand('old', 'new')
 
-
 Execute(expect RemoveBackSlashes remove backslashes):
   AssertEqual
   \  ticket#utils#RemoveBackSlashes('fix\%this-\%-bug'),
   \  'fix%this-%-bug'
+
+Execute(expect GetAllBranchNames to return the correct branches):
+  call system('git branch --force test_1 master')
+  let branchnames = ticket#git#GetAllBranchNames()
+  " index(list, string) ==# -1, means 'string not in list'
+  AssertNotEqual
+  \  index(branchnames, "test_1"),
+  \ -1
+
+Execute(expect GetAllBranchNames to return the correct branch when using forward slash prefixes):
+  call system('git branch --force feature/test_2 master')
+  let branchnames = ticket#git#GetAllBranchNames()
+  AssertNotEqual
+  \  index(branchnames, "feature\\%test_2"),
+  \ -1
+
+Execute(expect GetAllBranchNames strip forward slash prefixes):
+  call system('git branch --force feature/test_2 master')
+  let branchnames = ticket#git#GetAllBranchNames()
+  AssertEqual
+  \  index(branchnames, "feature/test_2"),
+  \ -1
+
+Execute(expect GetAllBranchNames to escape special chars):
+  call system('git branch --force branch-with-special-%-chars')
+  let branchnames = ticket#git#GetAllBranchNames()
+  AssertNotEqual
+  \  index(branchnames, "branch-with-special-\\%-chars"),
+  \ -1
+
+Execute(expect to DeleteSession):
+  call system('git branch --force cool-branch-to-delete')
+  call system('git checkout cool-branch-to-delete')
+  call ticket#sessions#CreateSession()
+  call ticket#deletion#DeleteCurrentAssociatedFile('.vim', 1)
+  call system('git checkout -')
+  AssertThrows
+  \  ticket#files#GetSessionFilePathOnlyIfExists('.vim')
+
+Execute(expect to DeleteSession with branches with special chars):
+  call system('git branch --force fix/cool-branch-to-delete-%-this')
+  call system('git checkout fix/cool-branch-to-delete-%-this')
+  call ticket#sessions#CreateSession()
+  call ticket#deletion#DeleteCurrentAssociatedFile('.vim', 1)
+  call system('git checkout -')
+  AssertThrows
+  \  ticket#files#GetSessionFilePathOnlyIfExists('.vim')

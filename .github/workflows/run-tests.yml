@@ -7,11 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup
         run: |
           git clone https://github.com/junegunn/vader.vim.git
           git checkout -b testing_branch
+          # required for testing GetAllBranchNames
+          git branch --force test_1
+          git branch --force feature/test_2 
 
       - name: Run Tests
         run: |
@@ -22,4 +28,4 @@ jobs:
           set rtp+=after
           filetype plugin indent on
           syntax enable
-          VIMRC) -c 'Vader! test/ci-tests.vader' > /dev/null
+          VIMRC) -c 'Vader! test/*.vader' > /dev/null
