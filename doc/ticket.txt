@@ -34,7 +34,6 @@ Contents ~
    3. The |g:ticket_use_fzf_default| option
    4. The |g:ticket_very_verbose| option
    5. The |g:ticket_overwrite_confirm| option
-   6. The |g:ticket_legacy_filename| option
  6. Deprecations                                        |ticket-deprecations|
  7. Contact                                             |ticket-contact|
  8. License                                             |ticket-license|
@@ -360,20 +359,14 @@ if the autosave feature is enabled (default: 0):
   :let g:ticket_overwrite_confirm = 1
 <
 
---------------------------------------------------------------------------------
-The *g:ticket_legacy_filename* option
-
-Use legacy session filenames system (see `:help ticket-deprecations` for more info):
-
->
-  :let g:ticket_legacy_filename = 1
-<
-
 ================================================================================
                                                               *ticket-deprecations*
 Deprecations ~
 
-This current version has altered the way session names are saved.
+As of 2.0.0, the way sessions are named has been permanently changed.
+
+If you wish to use the old session naming system then you will have to
+pin ticket.vim to version 1.6.0 or the associated commit.
 
 Previously, any branch names containing a forward slash would be partially
 stripped. For example, a branch named `fix/this-bug` would be saved as
@@ -387,16 +380,6 @@ Going forward all forward slashes will be converted to `%`.
 
 To be clear, if a branch is named `fix/this-bug` it will be saved as a session
 file named `fix%this-bug.vim` from now on.
-
-If you want to continue to use the legacy naming system please set the following
-option in your vimrc:
-
->
-  :let g:ticket_legacy_filename = 1
-<
-
-This will be removed in version 2.0.0 and then the new session saving system will
-be set in place.
 
 To migrate your old sessions I recommend searching for your old sessions using
 `FindSessions` or `TicketSessionsFzf` and selecting your session of interest
