@@ -13,8 +13,6 @@ For in vim docs, execute the following command:
 :help ticket.vim
 ```
 
-<!-- TODO: remove or modify this after increasing to the next major version -->
-
 > :warning: **Deprecation Warning**
 >
 > Session naming has changed; any branches containing `/` will have a different session
@@ -132,12 +130,6 @@ Ask for confirmation before overwriting existing session file, will not work if 
 
 ```vim
 let g:ticket_overwrite_confirm = 1
-```
-
-Use legacy session filenames system (see `:help ticket-deprecations` for more info):
-
-```vim
-let g:ticket_legacy_filename = 1
 ```
 
 ## Installation

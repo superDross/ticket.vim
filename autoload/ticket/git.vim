@@ -6,12 +6,6 @@
 function! s:NormaliseBranchName(full_branch_name) abort
   " remove/replace unwanted substrings from the given branchname
   " files cannot contain / in unix file systems, % must be escaped
-
-  " TODO: remove in the next major version
-  if g:ticket_legacy_filenames
-    return substitute(a:full_branch_name, '.*/\|\n', '', 'g')
-  endif
-
   let partial = substitute(a:full_branch_name, '\n', '', 'g')
   let partial = substitute(partial, '/', '%', 'g')
   return substitute(partial, '%', '\\%', 'g')
