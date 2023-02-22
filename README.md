@@ -13,12 +13,6 @@ For in vim docs, execute the following command:
 :help ticket.vim
 ```
 
-> :warning: **Deprecation Warning**
->
-> Session naming has changed; any branches containing `/` will have a different session
-> filename. Execute `:help ticket-deprecations` for more information.
-
-
 ### Within a Git Repo
 
 Executing `:SaveSession` will save a session associated with the current branch checked out within the repo.
