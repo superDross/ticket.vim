@@ -6,10 +6,12 @@
 function! s:FzfLuaNotes(args) abort
   " interactiely search notes contents using fzf-lua
   if ticket#utils#IsInstalled('fzf-lua')
-    lua require('fzf-lua').grep({
+    lua require('fzf-lua').live_grep_native({
+      \ previewer = 'bat',
+      \ prompt = 'Session Notes> ',
       \ rg_glob=true,
       \ cwd = vim.g.session_directory,
-      \ search=vim.fn.eval('a:args') .. ' -- *.md',
+      \ rg_opts = '--type md --column --line-number --no-heading --color=always --smart-case --',
       \ no_esc=true
     \ })
     return
